@@ -33,7 +33,7 @@ it('renders a readback failure without reporting success',async()=>{
 });
 
 it('prefills a companion handle without confirming identity or granting synchronization',async()=>{
- mount('/avanca/integracao?expected_username=%40Same.Account');
+ mount('/persiste/integracao?expected_username=%40Same.Account');
  expect(screen.getByLabelText('@ usado no Android e no Chrome')).toHaveValue('same.account');
  expect(screen.getByRole('checkbox')).not.toBeChecked();
  expect(screen.getByRole('button',{name:'Verificar identidade'})).toBeDisabled();
@@ -41,6 +41,6 @@ it('prefills a companion handle without confirming identity or granting synchron
  expect(mocks.syncToFlow).not.toHaveBeenCalled();
 });
 it('ignores malformed companion handle parameters',()=>{
- mount('/avanca/integracao?expected_username=other%26account');
+ mount('/persiste/integracao?expected_username=other%26account');
  expect(screen.getByLabelText('@ usado no Android e no Chrome')).toHaveValue('');
 });

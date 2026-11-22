@@ -13,8 +13,8 @@ import Auth from "./Auth";
 function show(returnTo?: string) {
   return render(<MemoryRouter initialEntries={[{ pathname: "/auth", state: { returnTo } }]}><Routes>
     <Route path="/auth" element={<Auth />} />
-    <Route path="/avanca/integracao" element={<h1>Integração retomada</h1>} />
-    <Route path="/avanca" element={<h1>Workspace autenticado</h1>} />
+    <Route path="/persiste/integracao" element={<h1>Integração retomada</h1>} />
+    <Route path="/persiste" element={<h1>Workspace autenticado</h1>} />
   </Routes></MemoryRouter>);
 }
 beforeEach(() => { vi.clearAllMocks(); Object.values(auth).forEach(fn => fn.mockResolvedValue({ error: null })); });
@@ -64,7 +64,7 @@ describe("Avança — contrato do formulário de acesso", () => {
 });
 
 it("resumes the companion integration after signing in", async () => {
-  show("/avanca/integracao?expected_username=same.account");
+  show("/persiste/integracao?expected_username=same.account");
   fireEvent.change(screen.getByLabelText("Email"), { target: { value: "qa@example.test" } });
   fireEvent.change(screen.getByLabelText("Senha"), { target: { value: "test-only-password" } });
   fireEvent.click(screen.getByRole("button", { name: "Entrar" }));

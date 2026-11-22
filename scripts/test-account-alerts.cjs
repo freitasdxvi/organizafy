@@ -131,7 +131,7 @@ const alerts = ids.slice(0, 2).map((account_id, i) => ({
       }
       return route.fulfill({ json: [] });
     });
-    await page.goto(base + "/avanca/alertas");
+    await page.goto(base + "/persiste/alertas");
     await page.getByRole("navigation", { name: "Menu principal" }).waitFor();
     const skip = page.getByRole("button", { name: "Pular apresentação" });
     if (await skip.isVisible()) await skip.click();

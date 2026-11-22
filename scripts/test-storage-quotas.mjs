@@ -50,7 +50,7 @@ try {
   if(request.url().includes('/rest/v1/ig_flow_preferences')) return route.fulfill({body:'null',contentType:'application/json'});
   return route.fulfill({json:request.url().includes('/auth/')?{id:admin,email:'admin@example.test'}:[]});
  });
- await page.goto(process.env.APP_URL||'http://localhost:8080/avanca/admin');
+ await page.goto(process.env.APP_URL||'http://localhost:8080/persiste/admin');
  const form=page.getByRole('form',{name:'Limite de armazenamento de user@example.test',exact:true});
  try { await form.waitFor({timeout:15000}); } catch(error) { await page.screenshot({path:`${artifacts}/failure.png`,fullPage:true}); console.log((await page.locator("body").innerText()).slice(0,2000),errors);throw error; }
  // The opening presentation is a modal with a focus trap; wait before entering values.

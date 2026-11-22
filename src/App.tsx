@@ -48,18 +48,19 @@ const App = () => (
               <Route path="/auth" element={<Auth />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/instagram/conectar" element={<InstagramConnect />} />
-              <Route path="/" element={<Navigate to="/avanca" replace />} />
+              <Route path="/" element={<Navigate to="/persiste" replace />} />
               <Route element={<ProtectedRoute />}>
-                <Route path="/avanca" element={<Agonia />} />
-                <Route path="/avanca/integracao" element={<AutomationIntegration />} />
-                <Route path="/avanca/:section" element={<Agonia />} />
+                <Route path="/persiste" element={<Agonia />} />
+                <Route path="/persiste/integracao" element={<AutomationIntegration />} />
+                <Route path="/persiste/:section" element={<Agonia />} />
               </Route>
-              <Route path="/avanca/stories-link" element={<Navigate to="/avanca/stories" replace />} />
+              <Route path="/persiste/stories-link" element={<Navigate to="/persiste/stories" replace />} />
+              <Route path="/avanca/*" element={<LegacyWorkspaceRedirect />} />
               <Route path="/agonia/*" element={<LegacyWorkspaceRedirect />} />
               <Route path="/dispara/*" element={<LegacyWorkspaceRedirect />} />
               <Route path="/disparo/*" element={<LegacyWorkspaceRedirect />} />
               {["/tarefas", "/notas", "/slides", "/mapas", "/config", "/instagram", "/instagram/*", "/tiktok", "/x"].map(path => (
-                <Route key={path} path={path} element={<Navigate to="/avanca" replace />} />
+                <Route key={path} path={path} element={<Navigate to="/persiste" replace />} />
               ))}
               <Route path="*" element={<NotFound />} />
             </Routes>

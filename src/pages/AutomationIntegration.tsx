@@ -56,7 +56,7 @@ export default function AutomationIntegration() {
     } finally { inFlight.current = false; setBusy(false); }
   }
   return <div className="mx-auto w-full max-w-3xl space-y-6 p-4 sm:p-6">
-    <Link to="/avanca/conectar" className="inline-flex items-center gap-2 text-sm text-muted-foreground"><ArrowLeft size={16} /> Voltar às conexões</Link>
+    <Link to="/persiste/conectar" className="inline-flex items-center gap-2 text-sm text-muted-foreground"><ArrowLeft size={16} /> Voltar às conexões</Link>
     <header className="space-y-2"><p className="text-xs uppercase tracking-widest text-muted-foreground">Integração com identidade verificada</p><h1 className="text-2xl font-semibold">Mesmo Instagram, do aparelho ao fluxo</h1><p className="text-sm text-muted-foreground">Confira a conta conectada à Meta e adicione-a a um fluxo ativo existente.</p></header>
     <section className="panel space-y-4 p-5" aria-label="Pré-requisitos">
       <h2 className="flex items-center gap-2 font-semibold"><ShieldCheck size={18} /> Antes de sincronizar</h2>
@@ -64,7 +64,7 @@ export default function AutomationIntegration() {
       <p className="text-sm text-muted-foreground">A verificação abaixo consulta a identidade ao vivo na Meta. Ela não controla o aparelho nem comprova automaticamente a configuração da 2FA.</p>
       <p className="text-sm text-muted-foreground">Companion para Windows: Gmail OAuth, verificação da conta no Android e pausa para o convite Meta. A configuração inicial exige consentimento Google e conexão USB.</p>
       <a href="https://github.com/vkalves/organizafyd/tree/main/desktop" target="_blank" rel="noreferrer" className="inline-block text-sm underline">Baixar e configurar o companion Windows</a>
-      <Link to="/avanca/conectar" className="inline-block text-sm underline">Conectar ou autorizar meu Instagram</Link>
+      <Link to="/persiste/conectar" className="inline-block text-sm underline">Conectar ou autorizar meu Instagram</Link>
     </section>
     <form className="panel space-y-5 p-5" onSubmit={event => { event.preventDefault(); void execute(true); }}>
       <fieldset disabled={busy} className="space-y-5">
@@ -81,6 +81,6 @@ export default function AutomationIntegration() {
       {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
       {verified && !result && <p role="status" className="text-sm">Identidade confirmada na Meta: <strong>@{verified.username}</strong>. Selecione o fluxo e sincronize.</p>}
     </form>
-    {result && <section role="status" className="panel space-y-3 border-emerald-800 p-5"><h2 className="flex items-center gap-2 font-semibold"><CheckCircle2 size={18} /> Associação confirmada</h2><p><strong>@{result.username}</strong> está associado ao fluxo <strong>{result.flowName}</strong>.</p><p className="text-sm text-muted-foreground">{result.alreadyAssociated ? "A conta já fazia parte do fluxo. Nenhuma nova sincronização foi enviada." : result.recoveredAfterWriteError ? "A resposta de sincronização foi interrompida, mas a associação foi confirmada ao consultar o fluxo novamente." : "A associação foi confirmada consultando o fluxo após a sincronização."}</p><p className="text-sm text-muted-foreground">Ao entrar pela primeira vez, a conta ignora o próximo horário de publicação e participa dos seguintes. Repetir a consulta não cria outro fluxo.</p><Link to="/avanca/fluxos" className="inline-block text-sm underline">Abrir Modo Fluxo</Link></section>}
+    {result && <section role="status" className="panel space-y-3 border-emerald-800 p-5"><h2 className="flex items-center gap-2 font-semibold"><CheckCircle2 size={18} /> Associação confirmada</h2><p><strong>@{result.username}</strong> está associado ao fluxo <strong>{result.flowName}</strong>.</p><p className="text-sm text-muted-foreground">{result.alreadyAssociated ? "A conta já fazia parte do fluxo. Nenhuma nova sincronização foi enviada." : result.recoveredAfterWriteError ? "A resposta de sincronização foi interrompida, mas a associação foi confirmada ao consultar o fluxo novamente." : "A associação foi confirmada consultando o fluxo após a sincronização."}</p><p className="text-sm text-muted-foreground">Ao entrar pela primeira vez, a conta ignora o próximo horário de publicação e participa dos seguintes. Repetir a consulta não cria outro fluxo.</p><Link to="/persiste/fluxos" className="inline-block text-sm underline">Abrir Modo Fluxo</Link></section>}
   </div>;
 }

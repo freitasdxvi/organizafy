@@ -32,7 +32,7 @@ const uid='11111111-1111-1111-1111-111111111111',accountId='22222222-2222-2222-2
    if(u.pathname.endsWith('/rest/v1/instagram_accounts'))return route.fulfill({json:[{id:accountId,user_id:uid,username:'same.account'}]});
    return route.fulfill({json:[]});
   });
-  await page.goto('http://127.0.0.1:5173/avanca/integracao');
+  await page.goto('http://127.0.0.1:5173/persiste/integracao');
   try{await page.getByRole('heading',{name:'Mesmo Instagram, do aparelho ao fluxo'}).waitFor({timeout:30000});}catch(error){console.error('Render diagnostic:',await page.locator('body').innerText(),errors);throw error;}
   await page.getByRole('dialog').waitFor({state:'hidden'});
   await page.getByLabel('@ usado no Android e no Chrome').pressSequentially('same.account');

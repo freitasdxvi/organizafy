@@ -1,4 +1,7 @@
 {
+  "redirects": [
+    { "source": "/avanca/:path*", "destination": "/persiste/:path*", "permanent": true }
+  ],
   "headers": [
     {
       "source": "/extensions/storys-com-link.zip",

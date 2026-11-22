@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { AVANCA_SITE_ORIGIN } from "../../supabase/functions/_shared/integration-origins";
+import { PERSISTE_SITE_ORIGIN } from "../../supabase/functions/_shared/integration-origins";
 import { Instagram, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { loginRequest } from "@/features/instagram-publisher/login";
@@ -8,7 +8,7 @@ import {
   rememberBrowserAuthorization, rememberPendingAuthorization, type BrowserAuthorization,
 } from "@/features/instagram-publisher/browser-authorization";
 
-const accountsUrl = `${AVANCA_SITE_ORIGIN}/avanca/instagram`;
+const accountsUrl = `${PERSISTE_SITE_ORIGIN}/persiste/instagram`;
 
 type AccountChoice = { id: string; username: string };
 type FinishResult = { username: string } | { selection: string; accounts: AccountChoice[] };

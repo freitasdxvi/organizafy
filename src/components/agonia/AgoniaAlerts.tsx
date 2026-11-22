@@ -361,7 +361,7 @@ export function AgoniaAlerts(
           <section className="panel" aria-label="Saúde das contas">
             <div className="panel-header">
               <h2 className="panel-title">Diagnóstico por conta</h2>
-              <Link className="link" to="/avanca/instagram">
+              <Link className="link" to="/persiste/instagram">
                 Gerenciar contas <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </div>

@@ -295,7 +295,7 @@ const Dashboard = () => {
   }, [now, timeZone]);
 
   if (workspaceMode === "agonia") {
-    return <Navigate to="/avanca" replace />;
+    return <Navigate to="/persiste" replace />;
   }
 
   if (loading || !data) {

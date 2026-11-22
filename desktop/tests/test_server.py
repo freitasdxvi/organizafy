@@ -40,7 +40,7 @@ class WorkflowTests(unittest.TestCase):
             with self.assertRaises(CompanionError):self.app.action('/api/continue',{'confirmed':False})
             browser.assert_not_called()
             result=self.app.action('/api/continue',{'confirmed':True})
-        self.assertEqual(result['url'],'https://www.organizafy.site/avanca/integracao?expected_username=same.account')
+        self.assertEqual(result['url'],'https://persiste.online/persiste/integracao?expected_username=same.account')
         self.assertNotIn('token',result['url'])
     def test_restart_never_assumes_completed_native_stage(self):
         self.app.workflow.update(username='same.account',serial='s',phase='native_complete',recoveryConfirmed=True);self.app.persist()

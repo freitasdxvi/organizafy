@@ -19,7 +19,7 @@ afterEach(() => { cleanup(); clients.splice(0).forEach(client => client.clear())
 it("announces a new problem once with sound and keeps it in the notification inbox", async () => {
  const { client, unmount } = show();
  const bell = await screen.findByRole("link", { name: /1 não lidos/ });
- expect(bell).toHaveAttribute("href", "/avanca/alertas");
+ expect(bell).toHaveAttribute("href", "/persiste/alertas");
  expect(mocks.warning).toHaveBeenCalledOnce(); expect(mocks.sound).toHaveBeenCalledWith("alert");
  await act(async () => { await client.invalidateQueries({ queryKey: ["instagram-monitor", "owner"] }); });
  expect(mocks.warning).toHaveBeenCalledOnce(); expect(mocks.sound).toHaveBeenCalledOnce();

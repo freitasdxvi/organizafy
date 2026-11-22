@@ -152,7 +152,7 @@ export function StoryLinkExtension() {
         processo oficial do Instagram.
       </p>
       <footer className="story-link-footer">
-        <Link className="link" to="/avanca/stories">
+        <Link className="link" to="/persiste/stories">
           Ir para Stories <ArrowRight size={14} />
         </Link>
         <span>

@@ -31,5 +31,5 @@ export function InstagramAlerts() {
  }, [monitor.data, user?.id]);
  const count = monitor.data?.alerts.filter(a => !a.read_at && !a.resolved_at).length ?? 0;
 
- return <Link to="/avanca/alertas" className="shell-icon-button relative" aria-label={monitor.isError ? 'Notificações do Instagram: monitoramento indisponível' : `Notificações do Instagram: ${count} não lidos`} title="Notificações do Instagram"><Bell className="h-4 w-4" />{(count > 0 || monitor.isError) && <span className=" -right-0.5 -top-0.5 absolute flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-semibold text-white">{monitor.isError ? '!' : count}</span>}</Link>;
+ return <Link to="/persiste/alertas" className="shell-icon-button relative" aria-label={monitor.isError ? 'Notificações do Instagram: monitoramento indisponível' : `Notificações do Instagram: ${count} não lidos`} title="Notificações do Instagram"><Bell className="h-4 w-4" />{(count > 0 || monitor.isError) && <span className=" -right-0.5 -top-0.5 absolute flex h-4 min-w-4 items-center justify-center rounded-full bg-destructive px-1 text-[10px] font-semibold text-white">{monitor.isError ? '!' : count}</span>}</Link>;
 }

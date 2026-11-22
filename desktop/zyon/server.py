@@ -17,7 +17,7 @@ from .gmail import Gmail
 from .vault import Vault
 
 WEB = Path(__file__).parent / "web"
-AVANCA = "https://www.organizafy.site/avanca/integracao"
+AVANCA = "https://persiste.online/persiste/integracao"
 
 
 def chrome(url):

@@ -25,7 +25,7 @@ it("names accounts missing insights permission without claiming their likes are 
   expect(screen.getByText("@alfa").closest("details")).not.toHaveAttribute("open");
   screen.getByText("@alfa").closest("details")!.open = true;
   expect(screen.getByText("@alfa")).toBeVisible();
-  expect(screen.getByRole("link")).toHaveAttribute("href", "/avanca/conectar");
+  expect(screen.getByRole("link")).toHaveAttribute("href", "/persiste/conectar");
 });
 it("does not ask for renewed authorization when metrics are authorized", () => {
   render(

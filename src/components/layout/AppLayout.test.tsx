@@ -9,20 +9,20 @@ const adminAccess = vi.hoisted(() => ({ is_admin: false }));
 vi.mock("@/features/administration/api", () => ({ useAdministrationAccess: () => ({ data: adminAccess }) }));
 import { AppLayout } from "./AppLayout";
 function Location() { return <output aria-label="Rota atual">{useLocation().pathname}</output>; }
-function show() { render(<MemoryRouter initialEntries={["/avanca"]}><AppLayout><Location /></AppLayout></MemoryRouter>); }
+function show() { render(<MemoryRouter initialEntries={["/persiste"]}><AppLayout><Location /></AppLayout></MemoryRouter>); }
 afterEach(() => { cleanup(); localStorage.clear(); adminAccess.is_admin = false; });
-const destinations = ["/avanca", "/avanca/fluxos", "/avanca/conectar", "/avanca/meta-developer", "/avanca/instagram", "/avanca/scheduled", "/avanca/reels", "/avanca/alertas", "/avanca/visualizacoes", "/avanca/settings", "/avanca/profile"];
+const destinations = ["/persiste", "/persiste/fluxos", "/persiste/conectar", "/persiste/meta-developer", "/persiste/instagram", "/persiste/scheduled", "/persiste/reels", "/persiste/alertas", "/persiste/visualizacoes", "/persiste/settings", "/persiste/profile"];
 describe("Avança — navegação preservada", () => {
   it("mostra a administração apenas quando o servidor reconhece o administrador", () => {
     show();
     expect(screen.queryByRole("link", { name: "Administração" })).not.toBeInTheDocument();
     cleanup(); adminAccess.is_admin = true; show();
-    expect(screen.getByRole("link", { name: "Administração" })).toHaveAttribute("href", "/avanca/admin");
+    expect(screen.getByRole("link", { name: "Administração" })).toHaveAttribute("href", "/persiste/admin");
   });
   it("prioriza fluxos, agendamentos e publicações na barra móvel, mantendo os demais destinos em Mais", () => {
     show();
     const quickNav = screen.getByRole("navigation", { name: "Navegação rápida" });
-    expect(within(quickNav).getAllByRole("link").map(a => a.getAttribute("href"))).toEqual(["/avanca", "/avanca/fluxos", "/avanca/scheduled", "/avanca/reels"]);
+    expect(within(quickNav).getAllByRole("link").map(a => a.getAttribute("href"))).toEqual(["/persiste", "/persiste/fluxos", "/persiste/scheduled", "/persiste/reels"]);
     expect(within(quickNav).getByRole("button", { name: "Mais opções" })).toBeInTheDocument();
   });
   it("mantém todos os destinos expandidos e recolhidos", () => {
@@ -42,11 +42,11 @@ describe("Avança — navegação preservada", () => {
   });
   it("mantém o Pico e sua fala durante a navegação", () => {
     render(
-      <MemoryRouter initialEntries={["/avanca"]}>
+      <MemoryRouter initialEntries={["/persiste"]}>
         <Routes>
           <Route element={<AppLayout><Outlet /></AppLayout>}>
-            <Route path="/avanca" element={<Location />} />
-            <Route path="/avanca/scheduled" element={<Location />} />
+            <Route path="/persiste" element={<Location />} />
+            <Route path="/persiste/scheduled" element={<Location />} />
           </Route>
         </Routes>
       </MemoryRouter>,
@@ -67,7 +67,7 @@ describe("Avança — navegação preservada", () => {
     expect(within(nav).getAllByRole("link").map(a => a.getAttribute("href"))).toEqual(destinations);
     fireEvent.click(within(nav).getByRole("link", { name: "Configurações" }));
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-    expect(screen.getByLabelText("Rota atual")).toHaveTextContent("/avanca/settings");
+    expect(screen.getByLabelText("Rota atual")).toHaveTextContent("/persiste/settings");
   });
   it("fecha com Escape e restaura o foco ao acionador", () => {
     show();

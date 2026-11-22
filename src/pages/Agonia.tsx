@@ -784,7 +784,7 @@ export default function Agonia() {
       toast.success(
         `${jobIndex} Reel(s) enviado(s) para a fila de publicação oficial!`,
       );
-      navigate("/avanca/scheduled");
+      navigate("/persiste/scheduled");
     } catch (err) {
       toast.error(
         err instanceof Error ? err.message : "Não foi possível agendar o Reel.",
@@ -835,7 +835,7 @@ export default function Agonia() {
       await refreshAll();
       setStoryFile(null);
       toast.success(`Story enviado para ${schedule.length} conta(s)!`);
-      navigate("/avanca/scheduled");
+      navigate("/persiste/scheduled");
     } catch (err) {
       toast.error(
         err instanceof Error
@@ -938,14 +938,14 @@ export default function Agonia() {
               <p className="page-subtitle">Sua operação, em um só lugar.</p>
             </div>
             <div className="action-row">
-              <Link className="button button-primary" to="/avanca/fluxos">
+              <Link className="button button-primary" to="/persiste/fluxos">
                 <Layers className="h-4 w-4" /> Modo Fluxo
               </Link>
 
             </div>
           </header>
 
-          {firstConnectionVisit && postsQuery.isSuccess && !posts.length && !accountsQuery.isPending && !accountsQuery.isError && accounts.length === 0 && <Link to="/avanca/meta-developer" className="panel dash-connect">
+          {firstConnectionVisit && postsQuery.isSuccess && !posts.length && !accountsQuery.isPending && !accountsQuery.isError && accounts.length === 0 && <Link to="/persiste/meta-developer" className="panel dash-connect">
             <span className="dash-connect-icon"><Instagram aria-hidden="true" /></span>
             <div><strong>Primeiro acesso? Conecte seu Instagram</strong><p className="panel-copy">Abra o guia Meta Developer e siga um passo de cada vez.</p></div>
             <span className="dash-connect-arrow"><ArrowRight aria-hidden="true" /></span>
@@ -974,12 +974,12 @@ export default function Agonia() {
           </div>
 
           <section className="grid stats-grid">
-            <Link to="/avanca/instagram" className="stat-card tone-purple">
+            <Link to="/persiste/instagram" className="stat-card tone-purple">
               <span className="stat-icon"><Instagram className="h-4 w-4" /></span>
               <div className="label">Contas conectadas</div>
               <div className="value">{stats.connected}</div>
             </Link>
-            <Link to="/avanca/scheduled" className="stat-card tone-blue">
+            <Link to="/persiste/scheduled" className="stat-card tone-blue">
               <span className="stat-icon"><CalendarClock className="h-4 w-4" /></span>
               <div className="label">Publicações na fila</div>
               <div className="value">{stats.scheduled}</div>
@@ -1008,7 +1008,7 @@ export default function Agonia() {
               </div>
               <span className="col-span-2 text-xs text-muted-foreground">{publishedToday.isError ? "Falha ao atualizar" : publishedToday.isPending ? "Consultando Instagram…" : publishedToday.data?.count == null ? "Consulta indisponível" : publishedToday.data.partial ? "Total parcial · consulta incompleta" : "Reels · 00h até 00h"}</span>
             </div>
-            <Link to="/avanca/alertas" className="stat-card tone-red">
+            <Link to="/persiste/alertas" className="stat-card tone-red">
               <span className="stat-icon"><AlertTriangle className="h-4 w-4" /></span>
               <div className="label">Alertas de contas</div>
               <div className={`value ${activeAlerts.length > 0 ? "text-rose-400 font-semibold" : ""}`}>
@@ -1096,7 +1096,7 @@ export default function Agonia() {
               </div>
             )}
 
-            <Link className="dash-ranking-link" to="/avanca/visualizacoes">Ver ranking completo <ArrowRight /></Link>
+            <Link className="dash-ranking-link" to="/persiste/visualizacoes">Ver ranking completo <ArrowRight /></Link>
             </div>
             </div>
             <details className="dash-ranking-tools">
@@ -1104,7 +1104,7 @@ export default function Agonia() {
             <div className="flex flex-wrap items-center gap-3 text-xs">
               <button type="button" className="button button-secondary" disabled={viewsReport.isFetching || viewsLoadingMore || accounts.length === 0} onClick={() => void refreshViews()}>{viewsReport.isFetching ? "Atualizando métricas…" : "Atualizar métricas"}</button>
               {accountViewsMetrics.hasMore && <button type="button" className="button button-secondary" disabled={viewsReport.isFetching || viewsLoadingMore} onClick={() => void loadMoreViews()}>{viewsLoadingMore ? "Carregando vídeos…" : "Carregar mais vídeos"}</button>}
-              <Link to="/avanca/visualizacoes" className="underline">Ver análise de visualizações</Link>
+              <Link to="/persiste/visualizacoes" className="underline">Ver análise de visualizações</Link>
             </div>
             {viewsReport.isFetching && <p role="status" className="text-xs text-muted-foreground">Consultando visualizações na Meta…</p>}
             {viewsReport.isError && <p role="alert" className="text-xs text-rose-300">Não foi possível atualizar as métricas. Tente novamente; os dados já consultados são mantidos.</p>}
@@ -1189,17 +1189,17 @@ export default function Agonia() {
           <section className="quick-actions-minimal">
             <span className="quick-actions-minimal-label">Ações rápidas</span>
             <div className="quick-actions-minimal-row">
-              <Link className="quick-action-mini-btn" to="/avanca/fluxos">
+              <Link className="quick-action-mini-btn" to="/persiste/fluxos">
                 <Layers className="h-4 w-4 text-emerald-400" />
                 <span>Modo Fluxo Automático</span>
                 <ArrowRight className="h-3 w-3 opacity-60" />
               </Link>
-              <Link className="quick-action-mini-btn" to="/avanca/reels-new">
+              <Link className="quick-action-mini-btn" to="/persiste/reels-new">
                 <Film className="h-4 w-4 text-blue-400" />
                 <span>Publicar Novo Reel</span>
                 <ArrowRight className="h-3 w-3 opacity-60" />
               </Link>
-              <Link className="quick-action-mini-btn" to="/avanca/conectar">
+              <Link className="quick-action-mini-btn" to="/persiste/conectar">
                 <Instagram className="h-4 w-4 text-purple-400" />
                 <span>Conectar Instagram</span>
                 <ArrowRight className="h-3 w-3 opacity-60" />
@@ -1219,7 +1219,7 @@ export default function Agonia() {
                     Campanhas automáticas ativas rodando em segundo plano nas suas contas.
                   </p>
                 </div>
-                <Link className="link" to="/avanca/fluxos">
+                <Link className="link" to="/persiste/fluxos">
                   Gerenciar Modo Fluxo <ArrowRight className="h-3.5 w-3.5" />
                 </Link>
               </div>
@@ -1283,7 +1283,7 @@ export default function Agonia() {
 
                       <div className="flex flex-wrap items-center gap-2 shrink-0">
                         <Link
-                          to="/avanca/fluxos"
+                          to="/persiste/fluxos"
                           className="button button-secondary text-xs py-2 px-3"
                         >
                           Acompanhar Campanha
@@ -1390,9 +1390,9 @@ export default function Agonia() {
           </header>
 
           <Suspense fallback={<p role="status">Consultando limite de contas…</p>}><ConnectionAccessSummary /></Suspense>
-          <Link to="/avanca/integracao" className="panel flex items-center justify-between gap-4 p-5"><div><strong>Verificar a mesma conta e integrar ao fluxo</strong><p className="panel-copy">Confira o @ na Meta e confirme a associação a um fluxo ativo existente.</p></div><ArrowRight size={16} aria-hidden="true" /></Link>
+          <Link to="/persiste/integracao" className="panel flex items-center justify-between gap-4 p-5"><div><strong>Verificar a mesma conta e integrar ao fluxo</strong><p className="panel-copy">Confira o @ na Meta e confirme a associação a um fluxo ativo existente.</p></div><ArrowRight size={16} aria-hidden="true" /></Link>
 
-          <Link to="/avanca/meta-developer" className="panel" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, padding: "17px 21px" }}>
+          <Link to="/persiste/meta-developer" className="panel" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, padding: "17px 21px" }}>
             <div><strong>Precisa de ajuda com a Meta?</strong><p className="panel-copy">Guia com exemplos para conectar sua conta ou configurar um app.</p></div>
             <ArrowRight className="h-4 w-4 shrink-0" aria-hidden="true" />
           </Link>
@@ -1400,7 +1400,7 @@ export default function Agonia() {
           <section className="panel" aria-label="Aviso sobre API e autorização da conta">
             <h2 className="panel-title">API própria é opcional</h2>
             <p className="panel-copy mt-2">
-              Use a conexão da plataforma. Se seu perfil precisar de liberação, peça ao responsável pelo aplicativo que envie o convite. Para ter autonomia, você pode cadastrar sua própria API em <Link to="/avanca/meta-developer" className="underline">Meta Developer</Link>.
+              Use a conexão da plataforma. Se seu perfil precisar de liberação, peça ao responsável pelo aplicativo que envie o convite. Para ter autonomia, você pode cadastrar sua própria API em <Link to="/persiste/meta-developer" className="underline">Meta Developer</Link>.
             </p>
             <p className="panel-copy mt-2">Convites gerados por outra pessoa vinculam o perfil ao usuário que enviou o link.</p>
           </section>
@@ -1536,7 +1536,7 @@ export default function Agonia() {
                 <option value="">Sem pasta</option>
                 {accountFolders.map((folder) => <option key={folder} value={folder}>{folder}</option>)}
               </select>
-              <button type="button" className="button button-primary" onClick={() => { setReelAccountIds(opsSelectedIds); navigate("/avanca/reels-new"); }}><Film size={14} /> Publicar nas selecionadas</button>
+              <button type="button" className="button button-primary" onClick={() => { setReelAccountIds(opsSelectedIds); navigate("/persiste/reels-new"); }}><Film size={14} /> Publicar nas selecionadas</button>
               <button type="button" className="ig-accounts-text-button" onClick={() => setOpsSelectedIds([])}>Limpar seleção</button>
             </div>
           )}
@@ -1579,7 +1579,7 @@ export default function Agonia() {
                         <span className="ig-account-queue">{queueCount} na fila</span>
                       </div>
                       <div className="ig-account-actions">
-                        <button type="button" className="ig-accounts-text-button" onClick={() => { setReelAccountIds([acc.id]); navigate("/avanca/reels-new"); }}>Publicar</button>
+                        <button type="button" className="ig-accounts-text-button" onClick={() => { setReelAccountIds([acc.id]); navigate("/persiste/reels-new"); }}>Publicar</button>
                         <button type="button" className="ig-accounts-manage" aria-label={`Gerenciar @${acc.username}`} aria-expanded={expanded} aria-controls={`ig-account-${acc.id}`} onClick={() => setOpsExpandedAccountId(expanded ? null : acc.id)}>Gerenciar <ChevronDown size={14} className={expanded ? "is-expanded" : ""} /></button>
                       </div>
                     </div>
@@ -1626,7 +1626,7 @@ export default function Agonia() {
                             toast.success("Conta removida da Persiste.");
                           }} />
                         </div>
-                        {link?.reconnect_required && <Link className="ig-accounts-text-button" to="/avanca/conectar">Reconectar esta conta <ArrowRight size={14} /></Link>}
+                        {link?.reconnect_required && <Link className="ig-accounts-text-button" to="/persiste/conectar">Reconectar esta conta <ArrowRight size={14} /></Link>}
                       </div>
                     )}
                   </article>
@@ -1642,7 +1642,7 @@ export default function Agonia() {
         <>
           <header className="topbar">
             <div>
-              <Link className="link" to="/avanca/reels">
+              <Link className="link" to="/persiste/reels">
                 <ArrowLeft className="h-3.5 w-3.5" /> Voltar para Reels
               </Link>
               <h1 className="page-title" style={{ marginTop: 12 }}>
@@ -1654,7 +1654,7 @@ export default function Agonia() {
               </p>
             </div>
             <div className="action-row">
-              <Link className="button button-secondary" to="/avanca/fluxos">
+              <Link className="button button-secondary" to="/persiste/fluxos">
                 <Layers className="h-4 w-4" /> Usar Modo Fluxo (Biblioteca e Loop)
               </Link>
             </div>
@@ -2069,7 +2069,7 @@ export default function Agonia() {
                   <button
                     type="button"
                     className="button button-secondary"
-                    onClick={() => navigate("/avanca")}
+                    onClick={() => navigate("/persiste")}
                   >
                     Cancelar
                   </button>
@@ -2085,7 +2085,7 @@ export default function Agonia() {
         <>
           <header className="topbar stories-topbar">
             <div>
-              <Link className="link" to="/avanca">
+              <Link className="link" to="/persiste">
                 <ArrowLeft className="h-3.5 w-3.5" /> Voltar para Dashboard
               </Link>
               <div className="eyebrow" style={{ marginTop: 14 }}>
@@ -2100,7 +2100,7 @@ export default function Agonia() {
             </div>
             <div className="stories-top-status">
               <span>● Instagram conectado</span>
-              <Link className="button button-secondary" to="/avanca/instagram">
+              <Link className="button button-secondary" to="/persiste/instagram">
                 Gerenciar contas
               </Link>
             </div>
@@ -2345,7 +2345,7 @@ export default function Agonia() {
                 <Link
                   className="button button-secondary"
                   style={{ width: "100%" }}
-                  to="/avanca/reels"
+                  to="/persiste/reels"
                 >
                   Ver publicações
                 </Link>
@@ -2409,10 +2409,10 @@ export default function Agonia() {
               </p>
             </div>
             <div className="actions">
-              <Link className="button button-secondary" to="/avanca/stories">
+              <Link className="button button-secondary" to="/persiste/stories">
                 Novo Story
               </Link>
-              <Link className="button button-primary" to="/avanca/reels-new">
+              <Link className="button button-primary" to="/persiste/reels-new">
                 Novo Reel
               </Link>
               <button
@@ -2588,12 +2588,12 @@ export default function Agonia() {
             <div className="actions">
               <details className="avanca-secondary-actions">
                 <summary>Mais opções</summary>
-                <div className="avanca-secondary-menu"><Link className="button button-secondary" to="/avanca/reels-test">Publicar Reel de teste</Link></div>
+                <div className="avanca-secondary-menu"><Link className="button button-secondary" to="/persiste/reels-test">Publicar Reel de teste</Link></div>
               </details>
-              <Link className="button button-secondary" to="/avanca/stories">
+              <Link className="button button-secondary" to="/persiste/stories">
                 Novo Story
               </Link>
-              <Link className="button button-primary" to="/avanca/reels-new">
+              <Link className="button button-primary" to="/persiste/reels-new">
                 Novo Reel
               </Link>
             </div>
@@ -2710,7 +2710,7 @@ export default function Agonia() {
                               <td>{statusBadge(post.status)}</td>
                               <td className="muted">
                                 {waitingMessage(post)}
-                                {post.status === "scheduled" && post.flow_id && flowById.get(post.flow_id)?.state === "paused" && <Link to="/avanca/fluxos" className="block mt-1 underline underline-offset-4">Revisar fluxo</Link>}
+                                {post.status === "scheduled" && post.flow_id && flowById.get(post.flow_id)?.state === "paused" && <Link to="/persiste/fluxos" className="block mt-1 underline underline-offset-4">Revisar fluxo</Link>}
                               </td>
                               <td>
                                 {post.status === "scheduled" ? (
@@ -2776,7 +2776,7 @@ export default function Agonia() {
         <>
           <header className="topbar">
             <div>
-              <Link className="link" to="/avanca/reels">
+              <Link className="link" to="/persiste/reels">
                 <ArrowLeft className="h-3.5 w-3.5" /> Voltar para Publicações
               </Link>
               <h1 className="page-title" style={{ marginTop: 12 }}>

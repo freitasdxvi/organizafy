@@ -55,27 +55,27 @@ interface NavSection {
 const agoniaSections: NavSection[] = [
   {
     items: [
-      { title: "Dashboard", path: "/avanca", icon: LayoutDashboard, exact: true },
-      { title: "Modo Fluxo", path: "/avanca/fluxos", icon: Layers },
-      { title: "Conectar", path: "/avanca/conectar", icon: PlugZap },
-      { title: "Meta Developer", path: "/avanca/meta-developer", icon: Code2 },
+      { title: "Dashboard", path: "/persiste", icon: LayoutDashboard, exact: true },
+      { title: "Modo Fluxo", path: "/persiste/fluxos", icon: Layers },
+      { title: "Conectar", path: "/persiste/conectar", icon: PlugZap },
+      { title: "Meta Developer", path: "/persiste/meta-developer", icon: Code2 },
     ],
   },
   {
     label: "Publicação",
     items: [
-      { title: "Instagram", path: "/avanca/instagram", icon: Instagram },
-      { title: "Agendamentos", path: "/avanca/scheduled", icon: CalendarClock },
-      { title: "Publicações", path: "/avanca/reels", icon: Film, matchPaths: ["/avanca/reels", "/avanca/reels-test", "/avanca/reels-new"] },
+      { title: "Instagram", path: "/persiste/instagram", icon: Instagram },
+      { title: "Agendamentos", path: "/persiste/scheduled", icon: CalendarClock },
+      { title: "Publicações", path: "/persiste/reels", icon: Film, matchPaths: ["/persiste/reels", "/persiste/reels-test", "/persiste/reels-new"] },
     ],
   },
   {
     label: "Conta",
     items: [
-      { title: "Alertas de contas", path: "/avanca/alertas", icon: Bell },
-      { title: "Visualizações", path: "/avanca/visualizacoes", icon: BarChart3 },
-      { title: "Configurações", path: "/avanca/settings", icon: Settings },
-      { title: "Meu Perfil", path: "/avanca/profile", icon: UserRound },
+      { title: "Alertas de contas", path: "/persiste/alertas", icon: Bell },
+      { title: "Visualizações", path: "/persiste/visualizacoes", icon: BarChart3 },
+      { title: "Configurações", path: "/persiste/settings", icon: Settings },
+      { title: "Meu Perfil", path: "/persiste/profile", icon: UserRound },
     ],
   },
 ];
@@ -84,7 +84,7 @@ const agoniaNavItems = agoniaSections.flatMap((s) => s.items);
 
 function isItemActive(item: NavItem, pathname: string) {
   if (item.exact) {
-    return pathname === "/" || pathname === "/avanca" || pathname === "/avanca/";
+    return pathname === "/" || pathname === "/persiste" || pathname === "/persiste/";
   }
   if (item.matchPaths) return item.matchPaths.includes(pathname);
   return pathname === item.path;
@@ -99,7 +99,7 @@ function SideNav({
 }) {
   const location = useLocation();
   const access = useAdministrationAccess();
-  const sections = access.data?.is_admin ? [...agoniaSections, { label: "Gestão", items: [{ title: "Administração", path: "/avanca/admin", icon: ShieldCheck }] }] : agoniaSections;
+  const sections = access.data?.is_admin ? [...agoniaSections, { label: "Gestão", items: [{ title: "Administração", path: "/persiste/admin", icon: ShieldCheck }] }] : agoniaSections;
 
   return (
     <>
@@ -223,11 +223,11 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     .toUpperCase();
 
   const currentPage = useMemo(() => {
-    if (location.pathname === "/avanca/alertas") return "Alertas de contas";
-    if (location.pathname === "/avanca/reels-new") return "Criar publicação";
-    if (location.pathname === "/avanca/stories") return "Stories";
-    if (location.pathname === "/avanca/admin") return "Administração";
-    if (location.pathname === "/avanca/reels-test") return "Diagnóstico de Publicação";
+    if (location.pathname === "/persiste/alertas") return "Alertas de contas";
+    if (location.pathname === "/persiste/reels-new") return "Criar publicação";
+    if (location.pathname === "/persiste/stories") return "Stories";
+    if (location.pathname === "/persiste/admin") return "Administração";
+    if (location.pathname === "/persiste/reels-test") return "Diagnóstico de Publicação";
     const match = agoniaNavItems.find((item) =>
       isItemActive(item, location.pathname),
     );
@@ -237,7 +237,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   // Mobile bottom bar: 4 primary destinations + "Mais" drawer trigger
   const mobilePrimaryItems = useMemo(
     () => agoniaNavItems.filter((item) =>
-      ["/avanca", "/avanca/fluxos", "/avanca/scheduled", "/avanca/reels"].includes(item.path),
+      ["/persiste", "/persiste/fluxos", "/persiste/scheduled", "/persiste/reels"].includes(item.path),
     ),
     [],
   );
@@ -265,7 +265,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         >
           <div className="shell-rail-top">
             <NavLink
-              to="/avanca"
+              to="/persiste"
               className="shell-brand"
               title="Persiste · Dashboard"
               aria-label="Persiste · Dashboard"
@@ -295,7 +295,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
           <div className="shell-rail-footer">
             <NavLink
-              to="/avanca/profile"
+              to="/persiste/profile"
               className={cn("shell-rail-account", !desktopSidebarOpen && "is-collapsed")}
               title={`${displayName} · Configurações`}
               aria-label="Perfil e configurações"
@@ -385,7 +385,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             >
               <div className="shell-mobile-brand">
                 <NavLink
-                  to="/avanca"
+                  to="/persiste"
                   onClick={() => setMobileMenuOpen(false)}
                   aria-label="Persiste"
                 >
@@ -407,7 +407,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
               <div className="shell-mobile-account">
                 <NavLink
-                  to="/avanca/profile"
+                  to="/persiste/profile"
                   onClick={() => setMobileMenuOpen(false)}
                   className="flex min-w-0 flex-1 items-center gap-2.5"
                 >

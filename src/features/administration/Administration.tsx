@@ -64,7 +64,7 @@ export default function Administration() {
   }
   if (access.isPending) return <p role="status">Verificando acesso administrativo…</p>;
   if (access.isError) return <section className="panel"><p role="alert">{access.error.message}</p><button className="button button-secondary" onClick={() => void access.refetch()}>Tentar novamente</button></section>;
-  if (!access.data?.is_admin) return <section className="panel"><h1 className="page-title">Acesso restrito</h1><p>Esta área é exclusiva de administradores.</p><Link className="button button-secondary" to="/avanca">Voltar à dashboard</Link></section>;
+  if (!access.data?.is_admin) return <section className="panel"><h1 className="page-title">Acesso restrito</h1><p>Esta área é exclusiva de administradores.</p><Link className="button button-secondary" to="/persiste">Voltar à dashboard</Link></section>;
   return (
     <div className="admin-panel">
       <header className="topbar"><div><div className="eyebrow">Administração</div><h1 className="page-title">Usuários e limites</h1><p className="page-subtitle">Gerencie as conexões do Instagram e o espaço de armazenamento de cada usuário.</p></div></header>
