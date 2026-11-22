@@ -22,7 +22,9 @@ export default function MetaDeveloper({ onConnected: _onConnected }: { onConnect
   const [error, setError] = useState("");
   const [deleting, setDeleting] = useState<MetaApp | undefined>();
   const active = apps.find(app => app.id === selectedId && app.active) || apps.find(app => app.active && app.isDefault) || apps.find(app => app.active);
-  const callback = config.data?.callback?.startsWith("https://") ? config.data.callback : "";
+  const projectUrl = import.meta.env.VITE_SUPABASE_URL?.replace(/\/+$/, "");
+  const configuredCallback = projectUrl?.startsWith("https://") ? `${projectUrl}/functions/v1/instagram-login` : "";
+  const callback = config.data?.callback?.startsWith("https://") ? config.data.callback : configuredCallback;
   function saved(data: MetaConfig) {
     client.setQueryData(queryKey, data); setEditing(undefined); setError("");
     setMessage("App salvo com segurança. A conexão está disponível.");

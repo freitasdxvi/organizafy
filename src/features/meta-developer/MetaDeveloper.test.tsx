@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter } from "react-router-dom";
-import { beforeEach, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, expect, it, vi } from "vitest";
 const mocks = vi.hoisted(() => ({ request: vi.fn(), browser: vi.fn() }));
 vi.mock("@/features/instagram-publisher/login", () => ({ loginRequest: mocks.request }));
 vi.mock("@/features/instagram-publisher/browser-login", () => ({ openBrowserLogin: mocks.browser }));
@@ -14,6 +14,7 @@ beforeEach(() => {
  vi.clearAllMocks(); mocks.request.mockResolvedValue({ apps: [app], ready: true, callback });
  mocks.browser.mockImplementation(async fn => { await fn(); return "popup"; });
 });
+afterEach(() => vi.unstubAllEnvs());
 it("matches the reference layout with private apps, required Config ID, real counts and callbacks", async () => {
  show(); await screen.findByText("App ID:");
  expect(screen.getByRole("heading", { name: "Apps Meta Developer" })).toBeVisible();
@@ -53,8 +54,11 @@ it("requires explicit deletion and reports backend protection for linked account
  expect(mocks.request).toHaveBeenCalledWith("delete_app", { id: app.id });
 });
 it("handles empty and failed lists without inventing credentials", async () => {
+ vi.stubEnv("VITE_SUPABASE_URL", "https://project.supabase.co/");
  mocks.request.mockRejectedValueOnce(new Error("offline")); show();
  await screen.findByText("Não foi possível consultar seus apps.");
+ expect(screen.getByLabelText("Callback do Login Unificado")).toHaveValue(callback);
+ expect(screen.getByLabelText("Callback do Instagram Login")).toHaveValue(callback);
  expect(screen.getByRole("button", { name: "Conectar pelo Instagram" })).toBeDisabled();
  mocks.request.mockResolvedValue({ apps: [], ready: false, callback });
  fireEvent.click(screen.getByRole("button", { name: "Tentar novamente" }));
