@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, it, expect, vi } from 'vitest';
 import InstagramConnect from '@/pages/InstagramConnect';
 import { loginRequest } from './login';
 import { rememberBrowserAuthorization, rememberPendingAuthorization } from './browser-authorization';
+import { AVANCA_SITE_ORIGIN } from '../../../supabase/functions/_shared/integration-origins';
 vi.mock('./login',()=>({loginRequest:vi.fn()}));
 const verifier='a'.repeat(64), nonce='b'.repeat(64);
 beforeEach(()=>{vi.resetAllMocks();sessionStorage.clear();localStorage.clear();window.history.replaceState(null,'','/instagram/conectar');});
@@ -21,13 +22,13 @@ describe('Instagram authorization return',()=>{
  it('does not exchange a callback without the browser verifier',async()=>{
  window.location.hash='code=secret-code&state=state1';render(<InstagramConnect/>);
  expect(await screen.findByRole('alert')).toHaveTextContent('navegador em que você o abriu');
- expect(screen.getByRole('link',{name:'Voltar e gerar um novo link'})).toHaveAttribute('href',new URL('/avanca/instagram','https://avança.online').href);
+ expect(screen.getByRole('link',{name:'Voltar e gerar um novo link'})).toHaveAttribute('href',new URL('/avanca/instagram',AVANCA_SITE_ORIGIN).href);
  expect(loginRequest).not.toHaveBeenCalled();expect(window.location.hash).toBe('');
  });
  it('clears proof only after successful completion and never stores callback code',async()=>{
  callback();vi.mocked(loginRequest).mockResolvedValue({username:'client'});
  render(<InstagramConnect/>);expect(await screen.findByText('@client conectado!')).toBeInTheDocument();
- expect(screen.getByRole('link',{name:'Voltar à Avança'})).toHaveAttribute('href',new URL('/avanca/instagram','https://avança.online').href);
+ expect(screen.getByRole('link',{name:'Voltar à Avança'})).toHaveAttribute('href',new URL('/avanca/instagram',AVANCA_SITE_ORIGIN).href);
  expect(loginRequest).toHaveBeenCalledWith('finish',{code:'secret-code',state:'state1',verifier,allow_selection:true});
  expect(sessionStorage.getItem('ig-login:state1')).toBeNull();expect(localStorage.getItem('ig-login:state1')).toBeNull();expect(sessionStorage.getItem('ig-authorization-pending')).toBeNull();expect(window.location.hash).toBe('');
  });
