@@ -1,5 +1,6 @@
 // Shared exact-origin policy for the AVANÇA connection and integration APIs.
 export const AVANCA_SITE_ORIGIN = "https://organizafy-freitasdxvi.vercel.app";
+export const PERSISTE_SITE_ORIGIN = "https://persiste.online";
 const DEFAULT_SITE = AVANCA_SITE_ORIGIN;
 function exactOrigin(value: string): string {
   try {
@@ -18,5 +19,5 @@ export function connectionSiteOrigin(configured?: string): string {
 export function integrationOrigins(extra?: string, site = DEFAULT_SITE): Set<string> {
   const values = extra?.split(",").map(value => value.trim()).filter(Boolean) || [];
   if (values.length > 20) throw new Error("invalid_integration_origin");
-  return new Set([exactOrigin(site), ...values.map(exactOrigin)]);
+  return new Set([exactOrigin(site), PERSISTE_SITE_ORIGIN, ...values.map(exactOrigin)]);
 }

@@ -1,9 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { AVANCA_SITE_ORIGIN, connectionSiteOrigin, integrationOrigins } from '../../../supabase/functions/_shared/integration-origins';
+import { AVANCA_SITE_ORIGIN, PERSISTE_SITE_ORIGIN, connectionSiteOrigin, integrationOrigins } from '../../../supabase/functions/_shared/integration-origins';
 describe('integration origin policy', () => {
-  it('limits the default policy to this deployment', () => {
+  it('allows the production domain and Vercel alias as exact HTTPS origins', () => {
     const origins = integrationOrigins();
-    expect([...origins]).toEqual([AVANCA_SITE_ORIGIN]);
+    expect([...origins]).toEqual([AVANCA_SITE_ORIGIN, PERSISTE_SITE_ORIGIN]);
+    expect(origins.has('http://persiste.online')).toBe(false);
+    expect(origins.has('https://persiste.online.attacker.example')).toBe(false);
     expect(origins.has('https://avanca.online.attacker.example')).toBe(false);
     expect(origins.has('https://avanca.online/path')).toBe(false);
     expect(origins.has('null')).toBe(false);
