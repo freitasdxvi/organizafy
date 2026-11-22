@@ -104,7 +104,7 @@
 
 :root body .workspace-shell.avanca-dark-shell.persiste-shell .shell-rail-top {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) 44px;
+  grid-template-columns: minmax(max-content, 1fr) 44px;
   gap: 8px;
   padding: 0 8px 12px;
 }
@@ -112,6 +112,11 @@
 .persiste-shell .shell-rail-top .shell-brand {
   min-height: 44px;
   justify-self: start;
+  overflow: visible;
+}
+
+.persiste-shell.shell-expanded .shell-rail-top .shell-brand {
+  padding-inline-end: 4px;
 }
 
 .persiste-shell .shell-rail-top .persiste-wordmark {
