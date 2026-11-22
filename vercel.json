@@ -1,5 +1,6 @@
 {
   "redirects": [
+    { "source": "/avanca", "destination": "/persiste", "permanent": true },
     { "source": "/avanca/:path*", "destination": "/persiste/:path*", "permanent": true }
   ],
   "headers": [
