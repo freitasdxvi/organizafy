@@ -97,6 +97,11 @@
   backdrop-filter: blur(18px) saturate(.75);
 }
 
+:root body .workspace-shell.avanca-dark-shell.persiste-shell :is(.shell-rail, .shell-mobile-menu) {
+  background: #101012;
+  box-shadow: 0 14px 40px #0505064a;
+}
+
 :root body .workspace-shell.avanca-dark-shell.persiste-shell .shell-rail-top {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 44px;
