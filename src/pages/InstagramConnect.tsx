@@ -105,7 +105,7 @@ export default function InstagramConnect() {
           else setManager(info.manager);
         } else {
           const pending = readPendingAuthorization();
-          if (!pending) throw new Error("Abra um link de conexão válido na Avança para começar.");
+          if (!pending) throw new Error("Abra um link de conexão válido na Persiste para começar.");
           setAuthorization(pending);
           setExpectedUsername(pending.expectedUsername || "");
           await recover(pending);
@@ -151,7 +151,7 @@ export default function InstagramConnect() {
           <form onSubmit={event => { event.preventDefault(); void confirmAccount(); }} className="space-y-4">
             <fieldset disabled={busy} className="space-y-3">
               <legend className="font-semibold">Qual Instagram deseja conectar?</legend>
-              <p className="text-sm text-muted-foreground">A Meta autorizou mais de um perfil. Escolha uma conta para adicionar à Avança.</p>
+              <p className="text-sm text-muted-foreground">A Meta autorizou mais de um perfil. Escolha uma conta para adicionar à Persiste.</p>
               <div className="max-h-64 space-y-2 overflow-y-auto">{choice.accounts.map(account => (
                 <label key={account.id} className="flex cursor-pointer items-center gap-3 rounded-lg border border-border p-3 has-[:checked]:bg-secondary">
                   <input type="radio" name="instagram-account" value={account.id} checked={accountId === account.id} onChange={() => setAccountId(account.id)} className="h-4 w-4 shrink-0 accent-foreground" />
@@ -164,9 +164,9 @@ export default function InstagramConnect() {
           </form>
         )}
         {success ? (
-          <div role="status"><h2 className="font-semibold">@{success} conectado!</h2><p>O responsável já pode agendar publicações autorizadas. Use o botão abaixo para voltar às suas contas.</p><Button asChild className="mt-4"><a href={accountsUrl}>Voltar à Avança</a></Button></div>
+          <div role="status"><h2 className="font-semibold">@{success} conectado!</h2><p>O responsável já pode agendar publicações autorizadas. Use o botão abaixo para voltar às suas contas.</p><Button asChild className="mt-4"><a href={accountsUrl}>Voltar à Persiste</a></Button></div>
         ) : manager && (
-          <><p>Você está conectando seu Instagram à conta de <strong className="break-all">{manager}</strong> na Avança.</p><p className="text-sm text-muted-foreground">Ao autorizar, esse responsável poderá agendar e publicar conteúdo no perfil escolhido. Use uma conta profissional. Sua senha é informada somente à Meta.</p><Button disabled={busy} onClick={() => void authorize()}>Autorizar no Instagram</Button><p className="text-xs text-muted-foreground">{provider === "facebook" ? "Na tela da Meta, escolha o portfólio correto. Se houver vários perfis, escolha qual conectar ao voltar à Avança." : "Entre no Instagram profissional que deseja conectar e autorize o acesso ao perfil e à publicação. Não é necessário vincular uma Página do Facebook."}</p></>
+          <><p>Você está conectando seu Instagram à conta de <strong className="break-all">{manager}</strong> na Persiste.</p><p className="text-sm text-muted-foreground">Ao autorizar, esse responsável poderá agendar e publicar conteúdo no perfil escolhido. Use uma conta profissional. Sua senha é informada somente à Meta.</p><Button disabled={busy} onClick={() => void authorize()}>Autorizar no Instagram</Button><p className="text-xs text-muted-foreground">{provider === "facebook" ? "Na tela da Meta, escolha o portfólio correto. Se houver vários perfis, escolha qual conectar ao voltar à Persiste." : "Entre no Instagram profissional que deseja conectar e autorize o acesso ao perfil e à publicação. Não é necessário vincular uma Página do Facebook."}</p></>
         )}
         {error && <p role="alert" className="text-destructive">{error}</p>}
         {recoverable && !success && <Button disabled={busy} onClick={() => void checkResult()} className="w-full">Verificar resultado</Button>}

@@ -13,7 +13,7 @@ const messages: Record<string, string> = {
   app_in_use: "Este app tem contas vinculadas. Você pode desativá-lo; para mudar o App ID ou o tipo de login, adicione outro app.",
   professional_required: "Use uma conta profissional do Instagram: Business ou Creator.",
   forbidden: "Somente administradores podem alterar o aplicativo Meta.",
-  unauthorized: "Entre novamente na Avança para continuar.",
+  unauthorized: "Entre novamente na Persiste para continuar.",
   invalid_config_id: "Informe o Config ID numérico do Login Unificado (5 a 40 dígitos).",
   invalid_app_config: "Preencha o nome, o App ID numérico e o Secret de 32 caracteres.",
   app_secret_required: "Informe o App Secret ao trocar o App ID.",
@@ -31,7 +31,7 @@ const messages: Record<string, string> = {
   invalid_state:
     "Esta autorização expirou ou foi aberta em outro navegador. Solicite um novo link.",
   invalid_selection:
-    "Esta escolha expirou ou já foi usada. Volte à Avança e gere um novo link para conectar o perfil.",
+    "Esta escolha expirou ou já foi usada. Volte à Persiste e gere um novo link para conectar o perfil.",
   missing_permission: "Autorize o acesso ao perfil e à publicação de conteúdo.",
   provider_conflict:
     "Este perfil já usa outra conexão. Entre em contato com o administrador para migrar o acesso.",

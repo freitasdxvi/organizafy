@@ -1,0 +1,223 @@
+.persiste-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #f0f0f2;
+  white-space: nowrap;
+}
+
+.persiste-mark {
+  display: inline-grid;
+  width: 1.2em;
+  height: 1em;
+  flex: 0 0 auto;
+  align-content: center;
+  gap: .092em;
+  font-size: 27px;
+}
+
+.persiste-mark > span {
+  display: block;
+  height: .205em;
+  background: linear-gradient(100deg, #9a9ba4, #f4f4f7 76%);
+  clip-path: polygon(17% 0, 100% 0, 83% 100%, 0 100%);
+}
+
+.persiste-wordmark {
+  font: 720 29px/1 var(--avanca-font);
+  letter-spacing: -.075em;
+}
+
+.shell-eyebrow .persiste-mark { font-size: 16px; }
+
+:root body .workspace-shell.avanca-dark-shell.persiste-shell {
+  --avanca-canvas: #101012;
+  --avanca-panel: #1b1b1f;
+  --avanca-panel-line: #eeeef027;
+  --persiste-glass: #202025bd;
+  --persiste-raised: #28282dc9;
+  --persiste-line: #e4e4e72b;
+  isolation: isolate;
+  color: #eeeef0;
+  background: var(--avanca-canvas);
+}
+
+.persiste-atmosphere {
+  --persiste-x: 0px;
+  --persiste-y: 0px;
+  --persiste-light-x: 74%;
+  --persiste-light-y: 22%;
+  position: fixed;
+  z-index: -1;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background: #101012;
+}
+
+.persiste-ribbon {
+  position: absolute;
+  inset: -7%;
+  background: url('/branding/persiste-carbon.png') center top / cover no-repeat;
+  transform: translate3d(var(--persiste-x), var(--persiste-y), 0);
+  transition: transform 440ms cubic-bezier(.2,.65,.3,1);
+}
+
+.persiste-ribbon::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: inherit;
+  opacity: .42;
+  mix-blend-mode: lighten;
+  animation: persiste-ribbon-drift 19s ease-in-out infinite alternate;
+}
+
+.persiste-atmosphere::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 230px 150px at var(--persiste-light-x) var(--persiste-light-y), #dddde911, transparent 90%),
+    linear-gradient(180deg, #09090c08 15%, #1111134a 64%, #111113b0);
+}
+
+@keyframes persiste-ribbon-drift {
+  from { transform: translate3d(-2px, -6px, 0) scale(1.015); }
+  to { transform: translate3d(17px, 9px, 0) scale(1.035); }
+}
+
+:root body .workspace-shell.avanca-dark-shell.persiste-shell .app-body::before {
+  background: linear-gradient(180deg, #101012ab, #10101200);
+}
+
+:root body .workspace-shell.avanca-dark-shell.persiste-shell :is(.shell-rail, .shell-header, .shell-mobile-menu, .shell-bottom-nav) {
+  border-color: var(--persiste-line);
+  background: linear-gradient(155deg, #34343bda, #18181bda 55%);
+  box-shadow: inset 0 1px #f5f5f50b, 0 14px 40px #0505064a;
+  backdrop-filter: blur(18px) saturate(.75);
+}
+
+:root body .workspace-shell.avanca-dark-shell.persiste-shell .shell-nav-link { color: #cbcbcf; }
+:root body .workspace-shell.avanca-dark-shell.persiste-shell .shell-nav-link.is-active {
+  color: #fafafa;
+  background: linear-gradient(115deg, #f0f0f026, #bcbcc217);
+  border-color: #ececec30;
+  box-shadow: inset 0 1px #f5f5f518;
+}
+
+:root body .workspace-shell.avanca-dark-shell.persiste-shell .agonia-root[data-section] :is(.panel, .stat-card) {
+  color: #eeeef0;
+  border: 1px solid var(--persiste-line);
+  border-radius: 15px;
+  background: linear-gradient(155deg, #ffffff0c, transparent 70%), var(--persiste-glass);
+  box-shadow: inset 0 1px #ffffff0b, 0 10px 28px #09090b40;
+  backdrop-filter: blur(15px) saturate(.85);
+}
+
+:root body .workspace-shell.avanca-dark-shell.persiste-shell .agonia-root[data-section="dashboard"] a.stat-card:hover {
+  background: var(--persiste-raised);
+  border-color: #fff5;
+}
+
+:root body .workspace-shell.avanca-dark-shell.persiste-shell .agonia-root[data-section="dashboard"] .dash-hero {
+  min-height: 104px;
+  align-items: center;
+  padding: 7px 0 15px;
+}
+
+:root body .workspace-shell.avanca-dark-shell.persiste-shell .agonia-root[data-section="dashboard"] .dash-hero .page-title {
+  font-size: clamp(28px, 4vw, 52px);
+  font-weight: 670;
+  line-height: 1.08;
+  letter-spacing: -.052em;
+  color: #f1f1f3;
+}
+
+:root body .workspace-shell.avanca-dark-shell.persiste-shell .agonia-root[data-section="dashboard"] .dash-hero .button-primary {
+  color: #f8f8fa;
+  background: linear-gradient(160deg, #55555e, #303038 76%);
+  border-color: #e4e4eb58;
+  box-shadow: inset 0 1px #eeeeee29, 0 4px 15px #0b0b0c50;
+}
+
+:root body .workspace-shell.avanca-dark-shell.persiste-shell .agonia-root[data-section="dashboard"] .dash-hero .button-primary:hover:not(:disabled) {
+  background: linear-gradient(160deg, #686872, #44444e 76%);
+}
+
+:root body .workspace-shell.avanca-dark-shell.persiste-shell .agonia-root[data-section="dashboard"] .period-tabs button.is-active {
+  color: #111116;
+  background: linear-gradient(150deg, #f1f1f5, #bebec7);
+  border-color: #e5e5eb;
+}
+
+.persiste-shell .shell-header-tools [data-persiste-sound-toggle][aria-pressed="false"] { color: #9b9ba3; }
+
+.persiste-auth .auth-showcase {
+  background: linear-gradient(180deg, #1212160a, #111112 94%), url('/branding/persiste-carbon.png') 63% top / cover no-repeat #111113;
+}
+.persiste-auth .auth-showcase::after { content: none; }
+.persiste-auth .auth-emblem-stage .persiste-mark { font-size: clamp(80px, 12vw, 165px); filter: drop-shadow(0 10px 34px #eeeeee26); }
+.persiste-welcome .welcome-stage-emblem { height: auto; width: auto; }
+.persiste-welcome .welcome-stage-emblem .persiste-mark { font-size: clamp(48px, 11vw, 110px); }
+.persiste-welcome .welcome-stage-title { text-transform: none; letter-spacing: -.07em; }
+
+.persiste-mascot {
+  position: fixed;
+  z-index: 52;
+  right: max(20px, env(safe-area-inset-right));
+  bottom: max(20px, env(safe-area-inset-bottom));
+  display: grid;
+  grid-template-columns: 40px 1fr 28px;
+  width: min(342px, calc(100vw - 28px));
+  align-items: center;
+  gap: 12px;
+  color: #f6f6f8;
+  background: linear-gradient(135deg, #38383cef, #1a1a1eee);
+  border: 1px solid #d4d4df55;
+  border-radius: 15px;
+  padding: 14px 10px 14px 14px;
+  box-shadow: inset 0 1px #ffffff18, 0 12px 34px #0008;
+  backdrop-filter: blur(16px);
+  animation: persiste-mascot-enter 250ms ease-out both;
+}
+.persiste-mascot-face {
+  width: 39px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px 14px 11px 11px;
+  background: linear-gradient(145deg, #f0f0f4, #7f818e 82%);
+  box-shadow: inset 0 1px #ffffffa3, 0 3px 8px #0007;
+}
+.persiste-mascot-face > span { position: relative; width: 28px; height: 16px; background: #1f2027; border-radius: 11px; }
+.persiste-mascot-face > span::before, .persiste-mascot-face > span::after {
+  content: ""; position: absolute; top: 5px; width: 4px; height: 5px; border-radius: 60%; background: #f6f6fa;
+  animation: persiste-mascot-blink 4.4s ease-in-out infinite;
+}
+.persiste-mascot-face > span::before { left: 7px; }
+.persiste-mascot-face > span::after { right: 7px; }
+.persiste-mascot-copy strong { font-size: 12px; font-weight: 650; }
+.persiste-mascot-copy p { margin: 4px 0 0; color: #e3e3e8; font-size: 12px; line-height: 1.45; }
+.persiste-mascot-dismiss { display: grid; place-items: center; align-self: start; width: 28px; height: 28px; border-radius: 8px; color: #d3d3da; }
+.persiste-mascot-dismiss:hover { color: #fff; background: #fff2; }
+.persiste-mascot-dismiss:focus-visible { outline: 2px solid #eee; outline-offset: 2px; }
+
+@keyframes persiste-mascot-enter { from { transform: translateY(8px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+@keyframes persiste-mascot-blink { 0%, 89%, 96%, 100% { transform: scaleY(1); } 93% { transform: scaleY(.17); } }
+
+@media (max-width: 1023px) {
+  .persiste-mascot { bottom: calc(92px + env(safe-area-inset-bottom)); right: 14px; }
+  .persiste-ribbon { background-position: 64% top; }
+}
+
+@media (pointer: fine) and (forced-colors: none) {
+  .persiste-shell, .persiste-auth { cursor: url('/branding/persiste-pointer.png') 3 2, default; }
+  :is(.persiste-shell, .persiste-auth) :is(a[href], button:not(:disabled), summary, [role="button"], select) { cursor: pointer; }
+  :is(.persiste-shell, .persiste-auth) :is(input:not([type="checkbox"]):not([type="radio"]), textarea, [contenteditable="true"]) { cursor: text; }
+  :is(.persiste-shell, .persiste-auth) :disabled { cursor: not-allowed; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .persiste-ribbon { transform: none; transition: none; }
+  .persiste-ribbon::after, .persiste-mascot, .persiste-mascot-face > span::before, .persiste-mascot-face > span::after { animation: none; }
+}

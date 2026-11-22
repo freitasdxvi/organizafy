@@ -97,6 +97,8 @@ import {
 } from "@/features/agonia/schedule";
 import "@/features/agonia/agonia.css";
 import { DashboardOverview, DashboardSchedule, DashboardViewsChart, type DashboardPeriod } from "@/features/agonia/DashboardOverview";
+import { PersisteMascot } from "@/features/persiste/PersisteMascot";
+import { dashboardGreeting, viewsOnReelsPublishedToday } from "@/features/persiste/dashboard";
 import "@/features/agonia/dashboard-concept.css";
 
 const Administration = lazy(() => import("@/features/administration/Administration"));
@@ -513,27 +515,21 @@ export default function Agonia() {
     </span>
   );
 
-  const dashHour = new Date().getHours();
-  const dashGreeting = useMemo(() => {
-    // ☀️ Manhã: das 5h às 12h
-    if (dashHour >= 5 && dashHour < 12) {
-      return "Bom dia! Vamos aos resultados.";
-    }
-    // 🌤️ Tarde: das 12h às 18h
-    if (dashHour >= 12 && dashHour < 18) {
-      return "Boa tarde! Vamos aos resultados.";
-    }
-    // 🌙 Noite: das 18h à 0h
-    if (dashHour >= 18 && dashHour < 24) {
-      return "Boa noite! Vamos aos resultados.";
-    }
-    // 🦉 Madrugada: da 0h às 5h
-    return "Olá! Seu espaço está pronto.";
-  }, [dashHour]);
+  const [dashboardNow, setDashboardNow] = useState(() => new Date());
+  useEffect(() => {
+    if (section !== "dashboard") return;
+    setDashboardNow(new Date());
+    const timer = window.setInterval(() => setDashboardNow(new Date()), 30_000);
+    return () => window.clearInterval(timer);
+  }, [section]);
+  const dashGreeting = dashboardGreeting(dashboardNow, settings.timezone, profile.username);
 
   const { report: viewsReport, loadingMore: viewsLoadingMore, loadMore: loadMoreViews, refreshMetrics: refreshViews } = useInstagramAnalytics(user?.id, section === "dashboard", 60_000);
   const publishedToday = usePublishedReelsToday(user?.id, section === "dashboard", settings.timezone);
   const reels = useMemo(() => reelMetrics(accounts.map(a => a.id), viewsReport.data), [accounts, viewsReport.data]);
+  const todayReelViews = useMemo(() => section === "dashboard"
+    ? viewsOnReelsPublishedToday(viewsReport.data, dashboardNow, settings.timezone)
+    : 0, [section, viewsReport.data, dashboardNow, settings.timezone]);
   const accountViewsMetrics = useMemo(() => {
     const rankedAccounts = accounts.map((acc) => ({ id: acc.id, username: acc.username, model: accountMeta[acc.id]?.modelName ?? null }));
     const target = MODEL_OPTIONS.find((m) => m.id === selectedModel)?.label.toLowerCase();
@@ -930,7 +926,6 @@ export default function Agonia() {
       {section === "dashboard" && (
         <>
           <header className="topbar dash-hero">
-            <div className="dash-hero-art" aria-hidden="true" />
             <div>
               <h1 className="page-title">{dashGreeting}</h1>
               <p className="page-subtitle">Sua operação, em um só lugar.</p>
@@ -942,6 +937,7 @@ export default function Agonia() {
 
             </div>
           </header>
+          <PersisteMascot totalViews={reels.views.value} viewsOnNewReels={todayReelViews} />
 
           {firstConnectionVisit && postsQuery.isSuccess && !posts.length && !accountsQuery.isPending && !accountsQuery.isError && accounts.length === 0 && <Link to="/avanca/meta-developer" className="panel dash-connect">
             <span className="dash-connect-icon"><Instagram aria-hidden="true" /></span>
@@ -1420,8 +1416,8 @@ export default function Agonia() {
               <div className="wizard-step">
                 <span className="step-number">3</span>
                 <div>
-                  <h3>Conecte no Avança</h3>
-                  <p>Volte aqui, clique em <strong>Conectar conta</strong> e escolha navegador, link ou QR Code. Autorize na Meta e volte ao Avança para confirmar a conexão.</p>
+                  <h3>Conecte no Persiste</h3>
+                  <p>Volte aqui, clique em <strong>Conectar conta</strong> e escolha navegador, link ou QR Code. Autorize na Meta e volte ao Persiste para confirmar a conexão.</p>
                 </div>
               </div>
             </div>
@@ -1621,7 +1617,7 @@ export default function Agonia() {
                             setOpsExpandedAccountId(null);
                             queryClient.setQueryData<PublisherAccount[]>(["instagram-publisher-accounts", user?.id], (current) => current?.filter((item) => item.id !== id));
                             await refreshAll();
-                            toast.success("Conta removida da Avança.");
+                            toast.success("Conta removida da Persiste.");
                           }} />
                         </div>
                         {link?.reconnect_required && <Link className="ig-accounts-text-button" to="/avanca/conectar">Reconectar esta conta <ArrowRight size={14} /></Link>}
@@ -3081,7 +3077,7 @@ export default function Agonia() {
               <div className="eyebrow">Conta</div>
               <h1 className="page-title">Meu Perfil</h1>
               <p className="page-subtitle">
-                Personalize seu nome e sua foto na Avança.
+                Personalize seu nome e sua foto na Persiste.
               </p>
             </div>
           </header>

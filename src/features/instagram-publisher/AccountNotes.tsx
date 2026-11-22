@@ -72,7 +72,7 @@ export function AccountNotes({
                 ? "Anotações salvas"
                 : value
                   ? "Salvo na sua conta"
-                  : "As notas ficam salvas na sua conta da Avança."}
+                  : "As notas ficam salvas na sua conta da Persiste."}
         </span>
         <button
           type="submit"

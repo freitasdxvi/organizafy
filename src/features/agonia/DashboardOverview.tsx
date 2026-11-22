@@ -38,19 +38,22 @@ export function DashboardViewsChart({ report, accountIds }: { report?: Analytics
   }
   const days = [...groups].sort(([a], [b]) => a - b);
   const max = Math.max(1, ...days.map(([, views]) => views));
-  const points = days.map(([, views], index) => [days.length === 1 ? 180 : 16 + 328 * index / (days.length - 1), 116 - views / max * 94]);
-  const line = points.map(([x, y]) => `${x},${y}`).join(" ");
+  const slot = 328 / Math.max(1, days.length);
+  const barWidth = Math.min(61, slot * 0.72);
 
   return (
     <figure className="dash-views-chart">
       <figcaption><strong>Visualizações por data de publicação</strong><small>Totais dos vídeos consultados, publicados nos últimos 7 dias.</small></figcaption>
-      {points.length ? <>
+      {days.length ? <>
         <svg viewBox="0 0 360 130" preserveAspectRatio="none" aria-hidden="true">
-          <defs><linearGradient id="avanca-chart-fill" x2="0" y2="1"><stop stopColor="white" stopOpacity=".25" /><stop offset="1" stopColor="white" stopOpacity="0" /></linearGradient></defs>
-          {[22, 53, 84, 116].map(y => <path key={y} d={`M16 ${y}H344`} stroke="currentColor" strokeOpacity=".19" strokeDasharray="2 4" />)}
-          {points.length > 1 && <polygon points={`${points[0][0]},116 ${line} ${points.at(-1)![0]},116`} fill="url(#avanca-chart-fill)" />}
-          <polyline points={line} fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
-          {points.map(([x, y], i) => <circle key={days[i][0]} cx={x} cy={y} r="3" fill="currentColor"><title>{shortDate.format(days[i][0])}: {number.format(days[i][1])} visualizações</title></circle>)}
+          <defs><linearGradient id="persiste-chart-fill" x1="0%" x2="0%" y1="0%" y2="100%"><stop stopColor="#f0f0f1" /><stop offset="1" stopColor="#a1a2a8" /></linearGradient></defs>
+          {[22, 53, 84, 116].map(y => <path key={y} d={`M16 ${y}H344`} stroke="currentColor" strokeOpacity=".16" />)}
+          {days.map(([day, views], index) => {
+            const height = views / max * 94;
+            return <rect key={day} x={16 + (index + 0.5) * slot - barWidth / 2} y={116 - height} width={barWidth} height={height} rx="2" fill="url(#persiste-chart-fill)">
+              <title>{shortDate.format(day)}: {number.format(views)} visualizações</title>
+            </rect>;
+          })}
         </svg>
         <ol className="dash-chart-labels">{days.map(([day, views]) => <li key={day}><span>{shortDate.format(day)}</span><strong>{number.format(views)}</strong></li>)}</ol>
       </> : <div className="dash-empty">Sem visualizações disponíveis para vídeos publicados nesse intervalo.</div>}

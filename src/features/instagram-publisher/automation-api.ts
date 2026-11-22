@@ -1,4 +1,4 @@
-// TypeScript / automation-api.ts / browser / verified AVANÇA account-to-flow adapter
+// TypeScript / automation-api.ts / browser / verified Persiste account-to-flow adapter
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { adminRequest } from "@/features/administration/api";
@@ -52,10 +52,10 @@ export type AutomationErrorCode =
   | "SESSION_CHANGED";
 const messages: Record<AutomationErrorCode, string> = {
   INVALID_INPUT: "Informe o @ esperado e os identificadores válidos da conta e do fluxo.",
-  UNAUTHENTICATED: "Entre na AVANÇA antes de integrar a conta.",
-  ACCOUNT_NOT_APPROVED: "A conta AVANÇA precisa estar aprovada para continuar.",
+  UNAUTHENTICATED: "Entre na Persiste antes de integrar a conta.",
+  ACCOUNT_NOT_APPROVED: "A conta Persiste precisa estar aprovada para continuar.",
   PREFLIGHT_UNAVAILABLE: "Não foi possível verificar o acesso e as conexões. Nenhuma sincronização foi iniciada.",
-  ACCOUNT_NOT_CONNECTED: "A conta esperada não está conectada e disponível neste usuário AVANÇA. Confira o perfil escolhido ou reconecte-o.",
+  ACCOUNT_NOT_CONNECTED: "A conta esperada não está conectada e disponível neste usuário Persiste. Confira o perfil escolhido ou reconecte-o.",
   AMBIGUOUS_ACCOUNT: "Mais de um registro corresponde ao @ esperado. Selecione explicitamente a conta que deseja integrar.",
   IDENTITY_MISMATCH: "A identidade retornada pelo Instagram difere da conta esperada. A integração foi interrompida.",
   IDENTITY_UNAVAILABLE: "Não foi possível confirmar a identidade no Instagram. Confira a conexão antes de continuar.",
@@ -63,7 +63,7 @@ const messages: Record<AutomationErrorCode, string> = {
   FLOW_NOT_ACTIVE: "O fluxo precisa permanecer ativo para confirmar a associação.",
   FLOW_READBACK_UNAVAILABLE: "Não foi possível conferir o resultado no fluxo. Atualize a conexão e consulte novamente antes de repetir.",
   FLOW_WRITE_UNCONFIRMED: "A sincronização não foi confirmada no fluxo. Nenhum reenvio automático foi feito; consulte o estado antes de tentar novamente.",
-  SESSION_CHANGED: "A sessão AVANÇA mudou durante a operação. Entre na conta correta e confira o resultado antes de continuar.",
+  SESSION_CHANGED: "A sessão Persiste mudou durante a operação. Entre na conta correta e confira o resultado antes de continuar.",
 };
 export class AutomationIntegrationError extends Error {
   readonly code: AutomationErrorCode;

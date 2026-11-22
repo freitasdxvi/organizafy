@@ -5,6 +5,7 @@ import "./index.css";
 import "./silver-theme.css";
 import "./avanca-theme.css";
 import "./components/layout/avanca-dark.css";
+import "./features/persiste/persiste.css";
 
 createRoot(document.getElementById("root")!).render(
   <ErrorBoundary>

@@ -17,6 +17,8 @@ import {
   CalendarClock,
   Film,
   UserRound,
+  Volume2,
+  VolumeX,
   Layers,
   Code2,
   MoreHorizontal,
@@ -29,7 +31,8 @@ import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { AppLayoutContext } from "@/contexts/AppLayoutContext";
 import { loadAgoniaProfile } from "@/features/agonia/schedule";
-import { SilverBrand } from "./SilverBrand";
+import { PersisteBrand } from "./PersisteBrand";
+import { PersisteAtmosphere, usePersisteClickSound } from "@/features/persiste/PersisteAtmosphere";
 import "./app-shell.css";
 
 type NavIcon = LucideIcon | ((props: SVGProps<SVGSVGElement>) => JSX.Element);
@@ -77,10 +80,6 @@ const agoniaSections: NavSection[] = [
 ];
 
 const agoniaNavItems = agoniaSections.flatMap((s) => s.items);
-
-function AgoniaBrand({ compact = false }: { compact?: boolean }) {
-  return <SilverBrand compact={compact} />;
-}
 
 function isItemActive(item: NavItem, pathname: string) {
   if (item.exact) {
@@ -149,6 +148,7 @@ function SideNav({
 }
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
+  const clickSound = usePersisteClickSound();
   const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileFocusMode, setMobileFocusMode] = useState(false);
@@ -244,11 +244,13 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     <AppLayoutContext.Provider value={layoutContext}>
       <div
         className={cn(
-          "workspace-shell avanca-dark-shell min-h-[100dvh] min-w-0 shell-agonia-mode",
+          "workspace-shell avanca-dark-shell persiste-shell min-h-[100dvh] min-w-0 shell-agonia-mode",
           desktopSidebarOpen && "shell-expanded",
           mobileFocusMode && "shell-mobile-focus",
         )}
+        onClickCapture={clickSound.play}
       >
+        <PersisteAtmosphere />
         <a href="#workspace-content" className="shell-skip-link">
           Ir para o conteúdo
         </a>
@@ -263,10 +265,10 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             <NavLink
               to="/avanca"
               className="shell-brand"
-              title="AVANÇA · Dashboard"
-              aria-label="AVANÇA · Dashboard"
+              title="Persiste · Dashboard"
+              aria-label="Persiste · Dashboard"
             >
-              <AgoniaBrand compact={!desktopSidebarOpen} />
+              <PersisteBrand compact={!desktopSidebarOpen} />
             </NavLink>
             <button
               type="button"
@@ -340,13 +342,24 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
           </button>
 
           <div className="shell-header-title">
-            <span className="shell-eyebrow"><SilverBrand compact /></span>
+            <span className="shell-eyebrow"><PersisteBrand compact /></span>
             <span className="shell-current-page">{currentPage}</span>
           </div>
 
           <div className="shell-header-space" />
 
           <div className="shell-header-tools">
+            <button
+              type="button"
+              className="shell-icon-button"
+              data-persiste-sound-toggle
+              aria-label="Som dos cliques"
+              aria-pressed={clickSound.enabled}
+              title={clickSound.enabled ? "Silenciar cliques" : "Ativar som dos cliques"}
+              onClick={clickSound.toggle}
+            >
+              {clickSound.enabled ? <Volume2 size={17} aria-hidden="true" /> : <VolumeX size={17} aria-hidden="true" />}
+            </button>
             <PublicationFeedback />
             <InstagramAlerts />
           </div>
@@ -372,9 +385,9 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
                 <NavLink
                   to="/avanca"
                   onClick={() => setMobileMenuOpen(false)}
-                  aria-label="AVANÇA"
+                  aria-label="Persiste"
                 >
-                  <AgoniaBrand />
+                  <PersisteBrand />
                 </NavLink>
                 <button
                   type="button"

@@ -4,7 +4,7 @@ import { WelcomeAnimation } from "./WelcomeAnimation";
 
 afterEach(() => { cleanup(); vi.useRealTimers(); window.history.replaceState(null, "", "/"); });
 
-describe("Boas-vindas AVANÇA", () => {
+describe("Boas-vindas Persiste", () => {
   it("não cobre o convite nem o retorno da autorização com a apresentação", () => {
     vi.useFakeTimers();
     window.history.replaceState(null, "", "/instagram/conectar#code=fake-code&state=fake-state");
@@ -16,7 +16,7 @@ describe("Boas-vindas AVANÇA", () => {
   it("exibe a apresentação, fecha automaticamente e não repete durante a navegação", () => {
     vi.useFakeTimers();
     const view = render(<WelcomeAnimation />);
-    expect(screen.getByRole("dialog")).toHaveAccessibleName("AVANÇA");
+    expect(screen.getByRole("dialog")).toHaveAccessibleName("persiste");
     act(() => vi.advanceTimersByTime(3000));
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
     view.rerender(<WelcomeAnimation />);
