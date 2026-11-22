@@ -1,5 +1,5 @@
 import { requireApprovedAccount } from "../_shared/account-approval.ts";
-import { connectionSiteOrigin, integrationOrigins } from "../_shared/integration-origins.ts";
+import { AVANCA_SITE_ORIGIN, PERSISTE_SITE_ORIGIN, connectionSiteOrigin, integrationOrigins } from "../_shared/integration-origins.ts";
 import { instagramAuthorizeUrl, instagramGrant } from "./instagram.ts";
 import { selectConnectionApp } from "./connection-option.ts";
 import { upgradeLegacySelection, type LegacySelectionStore } from "./legacy-selection.ts";
@@ -12,8 +12,9 @@ const db = createClient(
   { auth: { persistSession: false } },
 );
 requireApprovedAccount(db);
-const site = connectionSiteOrigin(Deno.env.get("AVANCA_SITE_ORIGIN"));
+const site = connectionSiteOrigin(Deno.env.get("AVANCA_SITE_ORIGIN")?.trim() || PERSISTE_SITE_ORIGIN);
 const allowedOrigins = integrationOrigins(Deno.env.get("AVANCA_EXTRA_ORIGINS"), site);
+allowedOrigins.add(AVANCA_SITE_ORIGIN);
 const callback =
   Deno.env.get("SUPABASE_URL")! + "/functions/v1/instagram-login";
 const hash = async (s: string) =>
