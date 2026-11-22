@@ -114,6 +114,20 @@
   transform: translateY(-1px);
 }
 
+.persiste-shell .shell-collapse-btn { position: relative; }
+
+:root body .workspace-shell.persiste-shell .shell-collapse-btn:focus {
+  outline: none;
+}
+
+.persiste-shell .shell-collapse-btn:focus-visible::after {
+  content: "";
+  position: absolute;
+  inset: auto 12px 7px;
+  border-bottom: 2px solid currentColor;
+  border-radius: 2px;
+}
+
 :root body .workspace-shell.avanca-dark-shell.persiste-shell:not(.shell-expanded) .shell-rail {
   padding-inline: 2px;
 }
