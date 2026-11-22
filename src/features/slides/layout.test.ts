@@ -1,0 +1,78 @@
+import { describe, expect, it } from 'vitest';
+import { alignSlideNodesCenter, centerSlideNodes, arrangeSlideNodes } from './layout';
+import type { SlideNode } from './types';
+const nodes: SlideNode[] = [
+  { id: 'a', type: 'slide', position: { x: -90, y: 100 }, style: { width: 120, height: 200 }, data: { kind: 'image', color: '#fff', background: 'transparent', fontSize: 24 } },
+  { id: 'b', type: 'slide', position: { x: 700, y: -200 }, style: { width: 400, height: 100 }, data: { kind: 'text', color: '#fff', background: 'transparent', fontSize: 24 } },
+];
+const target = { x: 50, y: 500 };
+describe('aligning individual elements', () => {
+  it('aligns different widths to the same center, centers text and preserves heights and source data', () => {
+    const result = alignSlideNodesCenter(nodes, target.x);
+    expect(result[0].position.x + 60).toBe(target.x);
+    expect(result[1].position.x + 200).toBe(target.x);
+    expect(result.map(n => n.position.y)).toEqual(nodes.map(n => n.position.y));
+    expect(result[1].data.align).toBe('center');
+    expect(result[0].data).toBe(nodes[0].data);
+    expect(result[0].style).toBe(nodes[0].style);
+    expect(nodes[1].data.align).toBeUndefined();
+    expect(nodes[0].position.x).toBe(-90);
+  });
+  it('handles an empty panel and measured widths', () => {
+    expect(alignSlideNodesCenter([], target.x)).toEqual([]);
+    const measured = { ...nodes[0], style: undefined, measured: { width: 80 } };
+    expect(alignSlideNodesCenter([measured], target.x)[0].position.x).toBe(10);
+  });
+});
+describe('centering without redistribution', () => {
+  it.each(['horizontal', 'vertical'] as const)('preserves every relative distance when centering %s', direction => {
+    const result = centerSlideNodes(nodes, direction, target);
+    const [a, b] = result.nodes;
+    expect(b.position.x - a.position.x).toBe(nodes[1].position.x - nodes[0].position.x);
+    expect(b.position.y - a.position.y).toBe(nodes[1].position.y - nodes[0].position.y);
+    expect(a.style).toBe(nodes[0].style);
+    expect(b.data).toBe(nodes[1].data);
+    expect(result.nodes.map(n => n.id)).toEqual(['a', 'b']);
+    expect(nodes[0].position).toEqual({ x: -90, y: 100 });
+  });
+  it('horizontal only shifts left/right and centers the whole bounding box', () => {
+    const result = centerSlideNodes(nodes, 'horizontal', target);
+    expect(result.nodes.map(n => n.position.y)).toEqual(nodes.map(n => n.position.y));
+    expect(result.bounds.x + result.bounds.width / 2).toBe(target.x);
+  });
+  it('vertical only shifts up/down and centers the whole bounding box', () => {
+    const result = centerSlideNodes(nodes, 'vertical', target);
+    expect(result.nodes.map(n => n.position.x)).toEqual(nodes.map(n => n.position.x));
+    expect(result.bounds.y + result.bounds.height / 2).toBe(target.y);
+  });
+  it('handles an empty panel and a single element', () => {
+    expect(centerSlideNodes([], 'vertical', target)).toEqual({ nodes: [], bounds: null });
+    const result = centerSlideNodes([nodes[0]], 'horizontal', target);
+    expect(result.nodes[0].position.x + 60).toBe(target.x);
+    expect(result.nodes[0].position.y).toBe(nodes[0].position.y);
+  });
+});
+
+describe('arranging variable-size content', () => {
+  it('keeps unselected nodes untouched and leaves a gap between selected items', () => {
+    const items = [...nodes.map(n => ({ ...n, selected: true })), { ...nodes[0], id: 'untouched', selected: false }];
+    const result = arrangeSlideNodes(items, 'row');
+    expect(result[2]).toBe(items[2]);
+    expect(result[1].position.x - result[0].position.x).toBe(160);
+    expect(result[0].position.y).toBe(result[1].position.y);
+    expect(result[0].data).toBe(items[0].data);
+    expect(items[0].position.x).toBe(-90);
+  });
+  it('uses the tallest item in each grid row to avoid overlap', () => {
+    const items = [...nodes, { ...nodes[0], id: 'c' }, { ...nodes[1], id: 'd' }];
+    const result = arrangeSlideNodes(items, 'grid');
+    expect(result[2].position.y - result[0].position.y).toBe(240);
+    expect(result[1].position.x - result[0].position.x).toBe(160);
+    expect(result[3].position.x).toBe(result[1].position.x);
+  });
+  it('does not move a single selection or an empty board', () => {
+    expect(arrangeSlideNodes([], 'column')).toEqual([]);
+    const items = nodes.map((n, i) => ({ ...n, selected: i === 0 }));
+    expect(arrangeSlideNodes(items, 'column')).toBe(items);
+  });
+});

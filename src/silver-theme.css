@@ -1,0 +1,87 @@
+/* ------------------------------------------------------------------
+   Organizafy Silver — brand primitives & legacy aliases.
+   Refined from the existing Hotfy/Organizafy dark-silver aesthetic:
+   clean 1px borders, solid silver primary, Sora headings, Inter body,
+   no background liquid texture on work screens, no custom PNG cursor.
+   ------------------------------------------------------------------ */
+:root {
+  --silver-gradient: linear-gradient(110deg, #fff, #c8cedd 35%, #e9ecf6 75%, #fff);
+  --silver-line: hsl(var(--border));
+  --silver-glass: hsl(var(--card));
+}
+
+.silver-text {
+  background: var(--silver-gradient);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.silver-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  color: hsl(var(--foreground));
+  font: 600 18px/1.15 var(--font-display);
+  letter-spacing: -0.03em;
+}
+.silver-brand img {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  mix-blend-mode: screen;
+}
+
+.silver-button {
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  border: 1px solid hsl(var(--primary));
+  box-shadow: none;
+  transition: background-color 150ms, border-color 150ms, opacity 150ms;
+}
+.silver-button:hover:not(:disabled) {
+  background: #ffffff;
+  border-color: #ffffff;
+}
+.silver-button:disabled {
+  opacity: 0.5;
+}
+
+/* Legacy KPI strip classes map to the new flat stat strip */
+.silver-stats {
+  border: 1px solid hsl(var(--border));
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: hsl(var(--card));
+}
+.silver-stats .silver-stat {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  padding: 18px 20px;
+}
+.silver-stats .silver-stat + .silver-stat {
+  border-left: 1px solid hsl(var(--border));
+}
+.silver-stat > p {
+  font: 600 clamp(26px, 2.4vw, 32px)/1.1 var(--font-display);
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+}
+.silver-stat:hover {
+  background: hsl(var(--card-hover));
+}
+@media (max-width: 1023px) {
+  .silver-stats .silver-stat { padding: 16px; }
+  .silver-stats .silver-stat:nth-child(3) { border-left: 0; }
+  .silver-stats .silver-stat:nth-child(n + 3) { border-top: 1px solid hsl(var(--border)); }
+}
+
+.tt-studio,
+.x-studio {
+  position: relative;
+  isolation: isolate;
+}

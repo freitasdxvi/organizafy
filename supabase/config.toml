@@ -1,0 +1,45 @@
+project_id = "jfowsdsbcshztmxtqnnl"
+
+# Import validates the user's JWT and approval before fetching public Instagram media.
+[functions.instagram-reel-import]
+verify_jwt = false
+
+# All actions validate the user's JWT internally; administration is checked server-side.
+[functions.app-admin]
+verify_jwt = false
+
+# Google returns to an unauthenticated GET; all POST actions validate the JWT
+# themselves, while cron uses a separate worker secret.
+[functions.google-calendar]
+verify_jwt = false
+
+# GET OAuth redirect is public; POST actions validate the user JWT or worker secret.
+[functions.x-publisher]
+verify_jwt = false
+
+# OAuth GET is public; every client POST validates its JWT; cron has its own secret.
+[functions.tiktok-publisher]
+verify_jwt = false
+
+# User requests validate JWT via auth.getUser; cron uses its Vault secret.
+[functions.instagram-publisher]
+verify_jwt = false
+
+# Meta downloads only with a short-lived HMAC capability issued by the worker.
+[functions.instagram-media]
+verify_jwt = false
+
+[functions.instagram-login]
+verify_jwt = false
+
+# User POSTs validate auth.getUser; cron validates the existing Vault worker secret.
+[functions.instagram-monitor]
+verify_jwt = false
+
+# Every account-management action validates its JWT with auth.getUser.
+[functions.instagram-accounts]
+verify_jwt = false
+
+# Public reads and user/service requests are authorized inside the gateway.
+[functions.s3-storage]
+verify_jwt = false

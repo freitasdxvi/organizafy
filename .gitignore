@@ -1,0 +1,43 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+.env
+.env.*
+!.env.example
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Supabase CLI temporary project metadata
+/supabase/.temp/
+
+# Windows companion: dependencies, caches, local credentials and package output
+/desktop/.venv/
+/desktop/build/
+/desktop/dist/
+**/__pycache__/
+*.pyc
+/desktop/client_secret*.json
+/desktop/credentials*.json
+/desktop/token*.json
+*.dpapi
+
+desktop/tests/android-form-fixture/build/

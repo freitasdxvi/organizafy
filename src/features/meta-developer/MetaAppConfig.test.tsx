@@ -1,0 +1,32 @@
+import { fireEvent, render, screen } from "@testing-library/react";
+import { beforeEach, expect, it, vi } from "vitest";
+const request = vi.hoisted(() => vi.fn());
+vi.mock("@/features/instagram-publisher/login", () => ({ loginRequest: request }));
+import { MetaAppConfig } from "./MetaAppConfig";
+const app = { id: "app-one", name: "App 01", appId: "123456", configId: "", active: true, createdAt: "", secretConfigured: true, accountCount: 0 };
+beforeEach(() => vi.clearAllMocks());
+it("creates a private Instagram Login app without requiring Config ID and clears the secret", async () => {
+  const saved = vi.fn(); request.mockResolvedValue({ apps: [app], ready: true, callback: "https://example.com/callback" });
+  render(<MetaAppConfig onSaved={saved} />);
+  fireEvent.change(screen.getByLabelText(/1. Nome interno/), { target: { value: "App 01" } });
+  fireEvent.change(screen.getByLabelText(/2. Meta App ID/), { target: { value: "123456" } });
+  const secret = screen.getByLabelText(/3. Meta App Secret/);
+  expect(secret).toHaveAttribute("type", "password");
+  expect(screen.getByLabelText(/Config ID/)).not.toBeRequired();
+  fireEvent.change(secret, { target: { value: "a".repeat(32) } });
+  fireEvent.click(screen.getByRole("button", { name: "Adicionar app Meta" }));
+  await vi.waitFor(() => expect(saved).toHaveBeenCalled());
+  expect(request).toHaveBeenCalledWith("save_app", { name: "App 01", appId: "123456", configId: "", appSecret: "a".repeat(32) });
+  expect(secret).toHaveValue("");
+});
+it("preserves existing secrets and requires a new secret when changing apps", async () => {
+  request.mockRejectedValue(new Error("Falha ao salvar"));
+  render(<MetaAppConfig app={app} onSaved={vi.fn()} />);
+  const secret = screen.getByLabelText(/3. Meta App Secret/);
+  expect(secret).not.toBeRequired();
+  fireEvent.change(screen.getByLabelText(/2. Meta App ID/), { target: { value: "999999" } });
+  expect(secret).toBeRequired();
+  fireEvent.change(secret, { target: { value: "b".repeat(32) } });
+  fireEvent.click(screen.getByRole("button", { name: "Salvar alterações" }));
+  expect(await screen.findByRole("alert")).toHaveTextContent("Falha ao salvar");
+});

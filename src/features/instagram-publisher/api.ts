@@ -1,0 +1,266 @@
+import { readPages } from "../../../supabase/functions/instagram-publisher/queue";
+import { storage } from '@/lib/storage';
+import type { SupabaseClient } from "@supabase/supabase-js";
+import { supabase } from "@/integrations/supabase/client";
+import { validatePost, type Post } from "./model";
+import { cleanMedia } from "@/features/x/clean-media";
+export type PublisherAccount = {
+  id: string;
+  user_id: string;
+  username: string;
+  avatar_url?: string | null;
+  created_at?: string;
+  notes?: string | null;
+};
+type Schema = {
+  public: {
+    Tables: {
+      instagram_accounts: {
+        Row: PublisherAccount;
+        Insert: Partial<PublisherAccount>;
+        Update: Partial<PublisherAccount>;
+        Relationships: [];
+      };
+      instagram_publication_drafts: {
+        Row: { [K in keyof Post]: Post[K] };
+        Insert: Partial<Post>;
+        Update: Partial<Post>;
+        Relationships: [];
+      };
+    };
+    Views: Record<string, never>;
+    Functions: Record<string, never>;
+  };
+};
+const db = supabase as unknown as SupabaseClient<Schema>;
+export type Connection = {
+  account_id: string;
+  paused: boolean;
+  reconnect_required: boolean;
+};
+const messages: Record<string, string> = {
+  storage_quota_exceeded: "Limite de armazenamento atingido. Exclua mídias ou solicite mais espaço ao administrador.",
+  copy_failed: "Não foi possível copiar esta mídia. Tente novamente.",
+  library_import_failed: "Não foi possível registrar a cópia na sua biblioteca. Tente novamente.",
+  account_connection_disabled: "O administrador não liberou novas conexões para seu usuário.",
+  account_limit_reached: "Você atingiu o limite de contas permitido. Solicite um aumento ao administrador.",
+  campaign_not_active: "Só é possível adicionar contas a uma campanha ativa.",
+  invalid_campaign: "Revise o tamanho dos lotes e o descanso da campanha.",
+  no_unused_media:
+    "Todas as mídias selecionadas já foram usadas ou reservadas nessas contas. Escolha outras mídias ou desative a proteção contra repetição.",
+  media_already_used:
+    "Uma mídia foi reservada por outro fluxo. Atualize a seleção e tente novamente.",
+  publication_needs_review:
+    "Revise as publicações com falha ou resultado incerto antes de retomar. Nenhum reenvio será feito automaticamente.",
+  campaign_stopped:
+    "Esta campanha foi encerrada. Crie uma nova campanha para publicar novamente.",
+  invalid_gap: "O intervalo mínimo entre mídias da mesma conta é de 3 minutos.",
+  invalid_slots:
+    "Informe de 1 a 24 horários HH:MM, sem repetir e com pelo menos 3 minutos entre eles.",
+  invalid_timezone: "Escolha um fuso horário válido.",
+  invalid_flow_invite: "O código é inválido, expirou ou o fluxo não está ativo.",
+  invalid_flow: "Revise os dados do fluxo.",
+  invalid_accounts: "Selecione ao menos uma conta.",
+  flow_too_large: "Não foi possível preparar este fluxo. Tente novamente.",
+  invalid_caption: "Cada legenda deve ter até 2.200 caracteres.",
+  invalid_media: "Selecione ao menos uma mídia da biblioteca.",
+  use_instagram_login:
+    "Use Conectar conta → Conectar meu Instagram para renovar este acesso.",
+  missing_publish_permission:
+    "Gere um token de usuário com instagram_basic e instagram_content_publish autorizadas para esta conta.",
+  invalid_connection: "Cole um token de acesso válido da Meta.",
+  invalid_instagram_id:
+    "Informe o ID numérico da conta profissional do Instagram, não o ID do aplicativo ou da Página.",
+  account_already_connected:
+    "Este perfil já está conectado a outro usuário do site.",
+  meta_100:
+    "A Meta não encontrou esse perfil ou não permitiu o acesso. Confira o ID e as permissões do token.",
+  meta_10:
+    "O token não tem as permissões necessárias. Gere um token com acesso ao perfil e à publicação no Instagram.",
+  meta_200:
+    "A Meta não autorizou o acesso. Confira as permissões do token e o vínculo entre a Página e o Instagram.",
+  account_not_connected: "Reconecte sua conta antes de agendar.",
+  invalid_schedule: "Escolha uma data futura.",
+  invalid_media_format:
+    "Use JPG no Feed e Carrossel; MP4 nos Reels; JPG ou MP4 nos Stories.",
+  invalid_media_owner: "Esta mídia não pertence à sua conta.",
+  invalid_handle: "Use de 3 a 30 letras, números ou sublinhados no seu @.",
+  handle_unavailable: "Este @ já está em uso.",
+  invalid_recipient: "Usuário não encontrado ou igual à sua própria conta.",
+  handle_required: "Salve seu @ antes de compartilhar.",
+  library_access_denied: "O acesso a esta biblioteca foi retirado.",
+  media_unavailable: "Esta mídia não está mais disponível.",
+  cannot_cancel: "A postagem já está em processamento ou foi encerrada.",
+  meta_190: "Token expirado ou inválido. Atualize a conexão.",
+  duplicate_conflict: "Este rascunho já foi agendado. Atualize a fila.",
+};
+export async function publisherRequest<T = { ok: boolean }>(
+  action: string,
+  values: Record<string, unknown> = {},
+): Promise<T> {
+  const { data, error } = await supabase.functions.invoke(
+    "instagram-publisher",
+    { body: { action, ...values } },
+  );
+  if (error) {
+    let code = "request_failed";
+    try {
+      code = (await error.context?.json())?.error || code;
+    } catch {
+      /* no JSON */
+    }
+    throw new Error(
+      messages[code] ||
+        "Não foi possível concluir. Verifique sua conexão e tente novamente.",
+    );
+  }
+  if (data?.error)
+    throw new Error(messages[data.error] || "Não foi possível concluir.");
+  return data;
+}
+export async function connections() {
+  return (await publisherRequest<{ accounts: Connection[] }>("status"))
+    .accounts;
+}
+export async function listPosts(userId: string): Promise<Post[]> {
+  const drafts = await readPages<Post>(async (from, to) => {
+    const result = await db.from("instagram_publication_drafts").select("*")
+      .eq("user_id", userId).order("created_at", { ascending: false })
+      .order("id", { ascending: false }).range(from, to);
+    if (result.error || !result.data) throw new Error("Não foi possível carregar os rascunhos.");
+    return result.data as unknown as Post[];
+  });
+  const jobsDb = supabase as unknown as SupabaseClient<{
+    public: {
+      Tables: {
+        ig_publication_jobs: {
+          Row: { [K in keyof Post]: Post[K] };
+          Insert: Partial<Post>;
+          Update: Partial<Post>;
+          Relationships: [];
+        };
+      };
+      Views: Record<string, never>;
+      Functions: Record<string, never>;
+    };
+  }>;
+  const jobs = await readPages<Post>(async (from, to) => {
+    const result = await jobsDb.from("ig_publication_jobs")
+      .select("id,user_id,account_id,caption,format,media_urls,scheduled_at,status,created_at,published_at,error_code,media_id,flow_id,cover_url,next_attempt_at")
+      .eq("user_id", userId).order("created_at", { ascending: false })
+      .order("id", { ascending: false }).range(from, to);
+    if (result.error || !result.data) throw new Error("Não foi possível carregar a fila.");
+    return result.data as unknown as Post[];
+  });
+  const ids = new Set(jobs.map((p) => p.id));
+  // Every account's counters and queue use this collection. A global display
+  // limit here hides entire accounts after a large flow or account addition.
+  return [
+    ...drafts.filter((p) => !ids.has(p.id)).map((p) => ({ ...p, source: "draft" as const })),
+    ...jobs.map((p) => ({ ...p, source: "job" as const })),
+  ].sort((a, b) => Date.parse(b.created_at) - Date.parse(a.created_at) || b.id.localeCompare(a.id));
+}
+
+export async function savePost(post: Omit<Post, "created_at" | "updated_at">) {
+  const clean = post;
+  validatePost(post, post.status === "scheduled");
+  if (post.status === "scheduled") {
+    await publisherRequest("schedule", { post: clean });
+    return;
+  }
+  const { error } = await db.from("instagram_publication_drafts").upsert(clean);
+  if (error) throw new Error("Não foi possível salvar o rascunho.");
+}
+export async function cancelPost(post: Post, userId: string) {
+  if (post.source === "job") {
+    await publisherRequest("cancel", { id: post.id });
+    return;
+  }
+  const { data, error } = await db
+    .from("instagram_publication_drafts")
+    .update({ status: "cancelled" })
+    .eq("id", post.id)
+    .eq("user_id", userId)
+    .neq("status", "cancelled")
+    .select("id");
+  if (error || !data?.length)
+    throw new Error(
+      "Não foi possível cancelar. Atualize a lista e tente novamente.",
+    );
+}
+export async function listAccounts(
+  userId: string,
+): Promise<PublisherAccount[]> {
+  const links = await connections();
+  if (!links.length) return [];
+  const { data, error } = await db
+    .from("instagram_accounts")
+    .select("id,user_id,username,avatar_url,created_at,notes")
+    .eq("user_id", userId)
+    .in(
+      "id",
+      links.map((c) => c.account_id),
+    )
+    .order("username");
+  if (error) throw new Error("Não foi possível carregar as contas.");
+  return data;
+}
+export async function saveAccountNotes(
+  userId: string,
+  accountId: string,
+  notes: string,
+): Promise<string> {
+  if (!userId || !accountId || typeof notes !== "string" || notes.length > 20000)
+    throw new Error("Revise as anotações antes de salvar.");
+  const { data, error } = await db
+    .from("instagram_accounts")
+    .update({ notes })
+    .eq("id", accountId)
+    .eq("user_id", userId)
+    .select("notes")
+    .single();
+  if (error || !data) throw new Error("Não foi possível salvar as anotações.");
+  return data.notes ?? "";
+}
+
+export async function uploadMedia(
+  files: File[],
+  userId: string,
+  progress?: (message: string) => void,
+): Promise<string[]> {
+  const result: string[] = [];
+  for (const file of files) {
+    const cleaned = await cleanMedia(file, {
+      maxBytes: 100 * 1024 * 1024,
+      jpeg: true,
+      ...(progress
+        ? {
+            onProgress: (stage, percent) =>
+              progress(
+                stage === "loading"
+                  ? "Preparando o processador de vídeo…"
+                  : stage === "verifying"
+                    ? "Verificando os metadados removidos…"
+                    : `Limpando vídeo${percent === undefined ? "" : `: ${percent}%`}…`,
+              ),
+          }
+        : {}),
+    });
+    const ext =
+      cleaned.type === "image/jpeg"
+        ? "jpg"
+        : cleaned.type === "video/mp4"
+          ? "mp4"
+          : null;
+    if (!ext || file.size > 100 * 1024 * 1024)
+      throw new Error("Use JPG ou MP4, com até 100 MB por arquivo.");
+    const path = userId + "/" + crypto.randomUUID() + "." + ext;
+    progress?.("Enviando arquivo limpo…");
+    const { error } = await storage
+      .from("instagram-publisher")
+      .upload(path, cleaned, { contentType: cleaned.type, upsert: false });
+    if (error) throw new Error(error.message || "Falha no upload. Tente novamente.");
+    result.push("storage://" + path);
+  }
+  return result;
+}
