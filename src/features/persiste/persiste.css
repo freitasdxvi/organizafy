@@ -97,6 +97,36 @@
   backdrop-filter: blur(18px) saturate(.75);
 }
 
+:root body .workspace-shell.avanca-dark-shell.persiste-shell .shell-rail-top {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 44px;
+  gap: 8px;
+  padding: 0 8px 12px;
+}
+
+.persiste-shell .shell-rail-top .shell-brand {
+  min-height: 44px;
+  justify-self: start;
+}
+
+.persiste-shell .shell-rail-top .persiste-wordmark {
+  font-size: 27px;
+  transform: translateY(-1px);
+}
+
+:root body .workspace-shell.avanca-dark-shell.persiste-shell:not(.shell-expanded) .shell-rail {
+  padding-inline: 2px;
+}
+
+:root body .workspace-shell.avanca-dark-shell.persiste-shell:not(.shell-expanded) .shell-rail-top {
+  grid-template-columns: minmax(0, 1fr);
+  justify-items: center;
+  gap: 4px;
+  padding-inline: 0;
+}
+
+.persiste-shell:not(.shell-expanded) .shell-rail-top .shell-brand { justify-self: center; }
+
 :root body .workspace-shell.avanca-dark-shell.persiste-shell .shell-nav-link { color: #cbcbcf; }
 :root body .workspace-shell.avanca-dark-shell.persiste-shell .shell-nav-link.is-active {
   color: #fafafa;
