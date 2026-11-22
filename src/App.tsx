@@ -4,7 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, Outlet, useLocation } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { AppLayout } from "@/components/layout/AppLayout";
@@ -26,12 +26,12 @@ function AppLoading() {
   return <div className="flex min-h-[100dvh] items-center justify-center bg-background"><div className="animate-pulse text-muted-foreground">Carregando...</div></div>;
 }
 
-function ProtectedRoute({ children }: { children: React.ReactNode }) {
+function ProtectedRoute() {
   const { user, loading } = useAuth();
   const location = useLocation();
   if (loading) return <AppLoading />;
   if (!user) return <Navigate to="/auth" replace state={{ returnTo: integrationReturnPath(location.pathname + location.search) }} />;
-  return <AccountApprovalGate><AppLayout>{children}</AppLayout></AccountApprovalGate>;
+  return <AccountApprovalGate><AppLayout key={user.id}><Outlet /></AppLayout></AccountApprovalGate>;
 }
 
 const App = () => (
@@ -49,10 +49,12 @@ const App = () => (
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/instagram/conectar" element={<InstagramConnect />} />
               <Route path="/" element={<Navigate to="/avanca" replace />} />
-              <Route path="/avanca" element={<ProtectedRoute><Agonia /></ProtectedRoute>} />
-              <Route path="/avanca/integracao" element={<ProtectedRoute><AutomationIntegration /></ProtectedRoute>} />
+              <Route element={<ProtectedRoute />}>
+                <Route path="/avanca" element={<Agonia />} />
+                <Route path="/avanca/integracao" element={<AutomationIntegration />} />
+                <Route path="/avanca/:section" element={<Agonia />} />
+              </Route>
               <Route path="/avanca/stories-link" element={<Navigate to="/avanca/stories" replace />} />
-              <Route path="/avanca/:section" element={<ProtectedRoute><Agonia /></ProtectedRoute>} />
               <Route path="/agonia/*" element={<LegacyWorkspaceRedirect />} />
               <Route path="/dispara/*" element={<LegacyWorkspaceRedirect />} />
               <Route path="/disparo/*" element={<LegacyWorkspaceRedirect />} />

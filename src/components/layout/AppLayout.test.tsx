@@ -1,5 +1,5 @@
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
-import { MemoryRouter, useLocation } from "react-router-dom";
+import { MemoryRouter, Outlet, Route, Routes, useLocation } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 vi.mock("@/contexts/AuthContext", () => ({ useAuth: () => ({ user: { id: "qa", email: "qa@example.test" }, signOut: vi.fn() }) }));
 vi.mock("@/components/shortcuts/Shortcuts", () => ({ Shortcuts: () => null }));
@@ -39,6 +39,25 @@ describe("Avança — navegação preservada", () => {
     }
     fireEvent.click(screen.getByRole("button", { name: "Expandir menu lateral" }));
     expect(within(nav).getByRole("link", { name: "Agendamentos" })).toBeInTheDocument();
+  });
+  it("mantém o Pico e sua fala durante a navegação", () => {
+    render(
+      <MemoryRouter initialEntries={["/avanca"]}>
+        <Routes>
+          <Route element={<AppLayout><Outlet /></AppLayout>}>
+            <Route path="/avanca" element={<Location />} />
+            <Route path="/avanca/scheduled" element={<Location />} />
+          </Route>
+        </Routes>
+      </MemoryRouter>,
+    );
+    const pico = screen.getByRole("button", { name: "Conversar com Pico" });
+    fireEvent.click(pico);
+    const nav = screen.getByRole("navigation", { name: "Menu principal" });
+    fireEvent.click(within(nav).getByRole("link", { name: "Agendamentos" }));
+    expect(screen.getByRole("button", { name: "Conversar com Pico" })).toBe(pico);
+    const mascot = screen.getByRole("complementary", { name: "Pico, mascote da Persiste" });
+    expect(within(mascot).getByRole("status")).toHaveTextContent("Como tá o faturamento do dia?");
   });
   it("mantém todos os destinos no menu móvel e fecha ao navegar", () => {
     show();

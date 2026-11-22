@@ -5,7 +5,7 @@ import { mediaLabel } from "@/features/instagram-publisher/media-label";
 import { InsightsPermissionNotice } from "@/features/instagram-publisher/InsightsPermissionNotice";
 import { loginRequest } from "@/features/instagram-publisher/login";
 import type { MetaConfig } from "@/features/meta-developer/meta-apps";
-import { lazy, Suspense, useEffect, useMemo, useRef, useState } from "react";
+import { lazy, Suspense, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -97,7 +97,7 @@ import {
 } from "@/features/agonia/schedule";
 import "@/features/agonia/agonia.css";
 import { DashboardOverview, DashboardSchedule, DashboardViewsChart, type DashboardPeriod } from "@/features/agonia/DashboardOverview";
-import { PersisteMascot } from "@/features/persiste/PersisteMascot";
+import { AppLayoutContext } from "@/contexts/AppLayoutContext";
 import { dashboardGreeting, viewsOnReelsPublishedToday } from "@/features/persiste/dashboard";
 import "@/features/agonia/dashboard-concept.css";
 
@@ -530,6 +530,13 @@ export default function Agonia() {
   const todayReelViews = useMemo(() => section === "dashboard"
     ? viewsOnReelsPublishedToday(viewsReport.data, dashboardNow, settings.timezone)
     : 0, [section, viewsReport.data, dashboardNow, settings.timezone]);
+  const setPicoMetrics = useContext(AppLayoutContext)?.setPicoMetrics;
+  const totalReelViews = reels.views.value;
+  useEffect(() => {
+    if (section !== "dashboard" || !setPicoMetrics) return;
+    setPicoMetrics({ totalViews: totalReelViews, viewsOnNewReels: todayReelViews });
+    return () => setPicoMetrics(null);
+  }, [section, setPicoMetrics, todayReelViews, totalReelViews]);
   const accountViewsMetrics = useMemo(() => {
     const rankedAccounts = accounts.map((acc) => ({ id: acc.id, username: acc.username, model: accountMeta[acc.id]?.modelName ?? null }));
     const target = MODEL_OPTIONS.find((m) => m.id === selectedModel)?.label.toLowerCase();
@@ -937,7 +944,6 @@ export default function Agonia() {
 
             </div>
           </header>
-          <PersisteMascot totalViews={reels.views.value} viewsOnNewReels={todayReelViews} />
 
           {firstConnectionVisit && postsQuery.isSuccess && !posts.length && !accountsQuery.isPending && !accountsQuery.isError && accounts.length === 0 && <Link to="/avanca/meta-developer" className="panel dash-connect">
             <span className="dash-connect-icon"><Instagram aria-hidden="true" /></span>

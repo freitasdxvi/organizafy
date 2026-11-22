@@ -29,10 +29,11 @@ import { NavLink, useLocation } from "react-router-dom";
 import { useEffect, useMemo, useRef, useState, type SVGProps } from "react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
-import { AppLayoutContext } from "@/contexts/AppLayoutContext";
+import { AppLayoutContext, type PicoMetrics } from "@/contexts/AppLayoutContext";
 import { loadAgoniaProfile } from "@/features/agonia/schedule";
 import { PersisteBrand } from "./PersisteBrand";
 import { PersisteAtmosphere, usePersisteClickSound } from "@/features/persiste/PersisteAtmosphere";
+import { PersisteMascot } from "@/features/persiste/PersisteMascot";
 import "./app-shell.css";
 
 type NavIcon = LucideIcon | ((props: SVGProps<SVGSVGElement>) => JSX.Element);
@@ -152,6 +153,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const [desktopSidebarOpen, setDesktopSidebarOpen] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [mobileFocusMode, setMobileFocusMode] = useState(false);
+  const [picoMetrics, setPicoMetrics] = useState<PicoMetrics | null>(null);
   const [profileTick, setProfileTick] = useState(0);
   const mobileMenuRef = useRef<HTMLElement>(null);
   const location = useLocation();
@@ -200,7 +202,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     };
   }, [mobileMenuOpen]);
 
-  const layoutContext = useMemo(() => ({ setMobileFocusMode }), []);
+  const layoutContext = useMemo(() => ({ setMobileFocusMode, setPicoMetrics }), []);
 
   const metadataName = user?.user_metadata?.display_name;
   const fallbackName =
@@ -495,6 +497,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
             <span className="w-full truncate text-center text-[11px] font-medium">Mais</span>
           </button>
         </nav>
+        <PersisteMascot totalViews={picoMetrics?.totalViews ?? null} viewsOnNewReels={picoMetrics?.viewsOnNewReels ?? 0} />
       </div>
     </AppLayoutContext.Provider>
   );

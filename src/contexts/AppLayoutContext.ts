@@ -1,7 +1,13 @@
 import { createContext, useContext } from "react";
 
+export interface PicoMetrics {
+  totalViews: number | null;
+  viewsOnNewReels: number;
+}
+
 export interface AppLayoutContextValue {
   setMobileFocusMode: (active: boolean) => void;
+  setPicoMetrics: (metrics: PicoMetrics | null) => void;
 }
 
 export const AppLayoutContext = createContext<AppLayoutContextValue | null>(null);
