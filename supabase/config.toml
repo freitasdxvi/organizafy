@@ -8,6 +8,9 @@ verify_jwt = false
 [functions.app-admin]
 verify_jwt = false
 
+[functions.instacaster]
+verify_jwt = true
+
 # Google returns to an unauthenticated GET; all POST actions validate the JWT
 # themselves, while cron uses a separate worker secret.
 [functions.google-calendar]
