@@ -3,6 +3,7 @@ import { PublicationFeedback } from "@/features/instagram-publisher/PublicationS
 import { InstagramAlerts } from "@/features/instagram-publisher/InstagramAlerts";
 import {
   ShieldCheck,
+  Mail,
   Bell,
   LayoutDashboard,
   BarChart3,
@@ -81,6 +82,13 @@ const agoniaSections: NavSection[] = [
 ];
 
 const agoniaNavItems = agoniaSections.flatMap((s) => s.items);
+const managementSection: NavSection = {
+  label: "Gestão",
+  items: [
+    { title: "Administração", path: "/persiste/admin", icon: ShieldCheck },
+    { title: "Instacaster", path: "/persiste/instacaster", icon: Mail },
+  ],
+};
 
 function isItemActive(item: NavItem, pathname: string) {
   if (item.exact) {
@@ -99,7 +107,7 @@ function SideNav({
 }) {
   const location = useLocation();
   const access = useAdministrationAccess();
-  const sections = access.data?.is_admin ? [...agoniaSections, { label: "Gestão", items: [{ title: "Administração", path: "/persiste/admin", icon: ShieldCheck }] }] : agoniaSections;
+  const sections = access.data?.is_admin ? [...agoniaSections, managementSection] : agoniaSections;
 
   return (
     <>
@@ -226,9 +234,8 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
     if (location.pathname === "/persiste/alertas") return "Alertas de contas";
     if (location.pathname === "/persiste/reels-new") return "Criar publicação";
     if (location.pathname === "/persiste/stories") return "Stories";
-    if (location.pathname === "/persiste/admin") return "Administração";
     if (location.pathname === "/persiste/reels-test") return "Diagnóstico de Publicação";
-    const match = agoniaNavItems.find((item) =>
+    const match = [...agoniaNavItems, ...managementSection.items].find((item) =>
       isItemActive(item, location.pathname),
     );
     return match?.title || "Dashboard";

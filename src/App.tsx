@@ -16,6 +16,7 @@ const PublicInfo = lazy(() => import("./pages/PublicInfo"));
 const InstagramConnect = lazy(() => import("./pages/InstagramConnect"));
 const Agonia = lazy(() => import("./pages/Agonia"));
 const AutomationIntegration = lazy(() => import("./pages/AutomationIntegration"));
+const Instacaster = lazy(() => import("./features/instacaster/Instacaster"));
 const Auth = lazy(() => import("./pages/Auth"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -52,6 +53,7 @@ const App = () => (
               <Route element={<ProtectedRoute />}>
                 <Route path="/persiste" element={<Agonia />} />
                 <Route path="/persiste/integracao" element={<AutomationIntegration />} />
+                <Route path="/persiste/instacaster" element={<Instacaster />} />
                 <Route path="/persiste/:section" element={<Agonia />} />
               </Route>
               <Route path="/persiste/stories-link" element={<Navigate to="/persiste/stories" replace />} />

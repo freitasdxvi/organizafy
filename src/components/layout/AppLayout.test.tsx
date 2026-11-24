@@ -16,8 +16,10 @@ describe("Avança — navegação preservada", () => {
   it("mostra a administração apenas quando o servidor reconhece o administrador", () => {
     show();
     expect(screen.queryByRole("link", { name: "Administração" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Instacaster" })).not.toBeInTheDocument();
     cleanup(); adminAccess.is_admin = true; show();
     expect(screen.getByRole("link", { name: "Administração" })).toHaveAttribute("href", "/persiste/admin");
+    expect(screen.getByRole("link", { name: "Instacaster" })).toHaveAttribute("href", "/persiste/instacaster");
   });
   it("prioriza fluxos, agendamentos e publicações na barra móvel, mantendo os demais destinos em Mais", () => {
     show();
