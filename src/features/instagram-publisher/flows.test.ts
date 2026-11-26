@@ -75,6 +75,40 @@ describe("Fluxos de publicação", () => {
     const jobs = buildFlow({ ...input, repeat: "loop", distribution: "split" }, library, user, 0, Math.random, { disabledAccounts: [accounts[0]] });
     expect(jobs.map(j => j.media_urls[0])).toEqual([library[1].url, library[3].url]);
   });
+  it("completa a rodada pendente de cada conta antes de repetir no modo loop", () => {
+    const config = { ...input, repeat: "loop" as const, random: true };
+    const published = [
+      { account_id: accounts[0], url: library[1].url, total: 1 },
+      { account_id: accounts[0], url: library[3].url, total: 1 },
+      ...library.map(({ url }) => ({ account_id: accounts[1], url, total: 1 })),
+    ];
+    const jobs = buildFlow(config, library, user, 0, () => 0, { published });
+    const urlsFor = (account: string) => jobs
+      .filter((job) => job.account_id === account)
+      .map((job) => job.media_urls[0])
+      .sort();
+
+    expect(urlsFor(accounts[0])).toEqual([library[0].url, library[2].url]);
+    expect(urlsFor(accounts[1])).toEqual(library.map(({ url }) => url));
+  });
+  it("considera apenas mídias elegíveis ao retomar uma rodada dividida", () => {
+    const jobs = buildFlow(
+      { ...input, repeat: "loop", distribution: "split", avoidReuse: true },
+      library,
+      user,
+      0,
+      () => 0,
+      {
+        published: [{ account_id: accounts[0], url: library[0].url, total: 2 }],
+        excluded: [{ account_id: accounts[0], url: library[2].url }],
+        used: [{ account_id: accounts[1], url: library[1].url }],
+      },
+    );
+    expect(jobs.map((job) => [job.account_id, job.media_urls[0]])).toEqual([
+      [accounts[0], library[0].url],
+      [accounts[1], library[3].url],
+    ]);
+  });
   it("distribui todas as mídias para cada conta sem alterar a biblioteca", () => {
     const jobs = buildFlow(input, library, user, 0);
     expect(jobs).toHaveLength(8);

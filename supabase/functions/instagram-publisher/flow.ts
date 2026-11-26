@@ -7,6 +7,11 @@ export type LibraryMedia = {
   caption: string;
   folder?: string;
 };
+export type FlowPublicationCount = {
+  account_id: string;
+  url: string;
+  total: number;
+};
 export type FlowInput = {
   id: string;
   name: string;
@@ -43,6 +48,7 @@ export function* buildFlowJobs(
     starts?: Record<string, number>;
     disabledAccounts?: string[];
     excluded?: { account_id: string; url: string }[];
+    published?: FlowPublicationCount[];
   } = {},
 ) {
   if (
@@ -157,6 +163,12 @@ export function* buildFlowJobs(
   const excluded = new Set(
     context.excluded?.map((item) => `${item.account_id}\0${item.url}`),
   );
+  const published = new Map(
+    context.published?.map(({ account_id, url, total }) => [
+      `${account_id}\0${url}`,
+      total,
+    ]),
+  );
   const media = input.mediaIds.map((id) => {
     const item = byId.get(id);
     if (!item || item.kind !== input.kind) {
@@ -201,11 +213,19 @@ export function* buildFlowJobs(
     const items = input.distribution === "split"
       ? shuffle(split.filter((_, i) => i % input.accountIds.length === accountIndex))
       : shuffle(media);
-    const fresh = items.filter(
+    const eligible = items.filter(
       (item) =>
         !excluded.has(`${accountId}\0${item.url}`) &&
         (!input.avoidReuse || !used.has(`${accountId}\0${item.url}`)),
     );
+    const publications = (item: LibraryMedia) =>
+      published.get(`${accountId}\0${item.url}`) ?? 0;
+    // An account that missed part of a round needs to finish it before repeating.
+    const lowest = eligible.reduce(
+      (count, item) => Math.min(count, publications(item)),
+      Infinity,
+    );
+    const fresh = eligible.filter((item) => publications(item) === lowest);
     const offset = context.offsets?.[accountId] ?? 0;
     const batch = input.batchSize || 500;
     const rest = (input.restMinutes || 0) * 60000;
