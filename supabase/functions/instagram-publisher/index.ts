@@ -15,7 +15,12 @@ import {
 } from "./published-today.ts";
 import { createClient } from "npm:@supabase/supabase-js@2.98.0";
 import { type Draft, mediaParams, validate } from "./model.ts";
-import { buildFlowJobs, type FlowInput, type LibraryMedia } from "./flow.ts";
+import {
+  buildFlowJobs,
+  type FlowInput,
+  type FlowPublicationCount,
+  type LibraryMedia,
+} from "./flow.ts";
 import { drainQueue, readPages, stageJobs } from "./queue.ts";
 import { publishContainer } from "./publication.ts";
 import { GraphFailure, canRetryBeforePublication, quotaExhausted } from "./publication-policy.ts";
@@ -189,8 +194,18 @@ async function advanceCampaigns() {
           p_id: flow.id,
         }),
       );
-      const used = (await flowUsed(flow.user_id, library.map((m) => m.url)))
-        .filter((row) => row.flow_id !== flow.id);
+      const used = input.avoidReuse
+        ? (await flowUsed(flow.user_id, library.map((m) => m.url)))
+          .filter((row) => row.flow_id !== flow.id)
+        : [];
+      const published = await readPages<FlowPublicationCount>(async (from, to) =>
+        checked(
+          await db.rpc("ig_flow_publication_counts", {
+            p_user: flow.user_id,
+            p_flow: flow.id,
+          }).order("account_id").order("url").range(from, to),
+        )
+      );
       const offsets: Record<string, number> = {},
         starts: Record<string, number> = {};
       const now = Date.now();
@@ -216,6 +231,7 @@ async function advanceCampaigns() {
         Math.random,
         {
           used,
+          published,
           offsets,
           starts,
           disabledAccounts: input.accountIds.filter((id) =>
